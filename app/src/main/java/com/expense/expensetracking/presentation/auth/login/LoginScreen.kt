@@ -1,5 +1,6 @@
 package com.expense.expensetracking.presentation.auth.login
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +20,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,6 +42,9 @@ fun LoginScreen(
     onNavigateHomeScreen: () -> Unit,
     onNavigateForgotPassword: () -> Unit
 ){
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,17 +61,27 @@ fun LoginScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             AuthEditText(
-                "Email",
-                "Email",
-                false,
-                ""
-            ) { }
+                label = "Email",
+                hint = "Email",
+                isPassword = false,
+                value = "",
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next,
+                onValueChange = { }
+            )
             AuthEditText(
-                "Password",
-                "Password",
-                true,
-                ""
-            ) { }
+                label = "Password",
+                hint = "Password",
+                isPassword = true,
+                value = "",
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done,
+                onImeAction = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                },
+                onValueChange = { }
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,7 +104,10 @@ fun LoginScreen(
                     fontFamily = Manrope,
                     color = PrimaryGreen,
                     textDecoration = TextDecoration.Underline,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
+                    modifier = Modifier.clickable {
+                        onNavigateForgotPassword()
+                    }
                 )
             }
             AppBtn("Giriş Yap") { }
@@ -94,6 +115,6 @@ fun LoginScreen(
         AuthRegisterLogin(
             "Hesabın yok mu?",
             "Hesap Oluştur"
-        ) { }
+        ) { onNavigateRegisterScreen() }
     }
 }

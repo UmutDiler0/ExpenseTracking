@@ -1,32 +1,30 @@
 package com.expense.expensetracking.presentation.auth.component
 
-import android.widget.EditText
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
-
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.BaselineShift
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
 import com.expense.expensetracking.ui.theme.InputBg
 import com.expense.expensetracking.ui.theme.InputText
-
 import com.expense.expensetracking.ui.theme.Manrope
 import com.expense.expensetracking.ui.theme.TextWhite
 
@@ -36,6 +34,9 @@ fun AuthEditText(
     hint: String,
     isPassword: Boolean,
     value: String,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    imeAction: ImeAction = ImeAction.Next,
+    onImeAction: () -> Unit = {},
     onValueChange: (String) -> Unit
 ){
     Column(
@@ -90,7 +91,20 @@ fun AuthEditText(
             },
             textStyle = LocalTextStyle.current.copy(
                 baselineShift = BaselineShift(-0.1f)
-            )
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = keyboardType,
+                imeAction = imeAction
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    onImeAction()
+                },
+                onNext = {
+                    onImeAction()
+                }
+            ),
+            singleLine = true
         )
     }
 }
