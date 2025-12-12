@@ -20,6 +20,9 @@ object Register
 object ForgotPassword
 
 @Serializable
+object HomeGraph
+
+@Serializable
 object Home
 
 @Serializable
