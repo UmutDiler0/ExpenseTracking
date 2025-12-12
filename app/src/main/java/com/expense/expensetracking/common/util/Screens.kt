@@ -9,6 +9,8 @@ object Splash
 object OnBoarding
 
 @Serializable
+object Auth
+@Serializable
 object Login
 
 @Serializable

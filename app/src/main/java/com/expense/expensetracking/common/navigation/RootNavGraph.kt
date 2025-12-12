@@ -6,7 +6,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navigation
 import com.expense.expensetracking.common.util.Splash
+import com.expense.expensetracking.presentation.auth.navigation.authNavGraph
 import com.expense.expensetracking.presentation.splash.SplashScreen
 
 @Composable
@@ -23,5 +25,6 @@ fun RootNavController(
                 onNavigateLoginScreen = {}
             ) { }
         }
+        authNavGraph(navController)
     }
 }
