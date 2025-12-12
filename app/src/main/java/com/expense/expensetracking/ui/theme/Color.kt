@@ -28,3 +28,9 @@ val TextBlack = Color(0xFF111827)     // zinc-900
 val ChartAmber = Color(0xFFFBBF24) // amber-400
 val ChartSky = Color(0xFF38BDF8)   // sky-400
 val ChartPink = Color(0xFFF472B6)  // pink-400
+
+val GreenPrimary = Color(0xFF13EC5B)
+// Card gradients vs için
+val InputBg = Color(0xFF23482F)
+val InputText = Color(0xFF92C9A4)
+val TextGray = Color(0xFFAAAAAA)

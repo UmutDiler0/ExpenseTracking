@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
 fun OnBoardingScreen(
     onNavigateHomeScreen: () -> Unit
 ){
+    val scope = rememberCoroutineScope() // Butonla sayfa geçişi için
     val pages = listOf(
         OnboardingPageData(
             imageSource = R.drawable.credit_cards,
@@ -61,7 +62,7 @@ fun OnBoardingScreen(
 
     )
     val pagerState = rememberPagerState(pageCount = { pages.size })
-    val scope = rememberCoroutineScope() // Butonla sayfa geçişi için
+
 
 
         Column(

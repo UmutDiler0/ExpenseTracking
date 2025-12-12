@@ -8,11 +8,17 @@ import com.expense.expensetracking.common.util.Auth
 import com.expense.expensetracking.common.util.ForgotPassword
 import com.expense.expensetracking.common.util.Login
 import com.expense.expensetracking.common.util.Register
+import com.expense.expensetracking.presentation.auth.login.LoginScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController){
 
     navigation<Auth>(startDestination = Login){
-        composable<Login> {  }
+        composable<Login> {
+            LoginScreen(
+                onNavigateRegisterScreen = {},
+                onNavigateHomeScreen = {},
+            ) { }
+        }
 
         composable<Register> {  }
 
