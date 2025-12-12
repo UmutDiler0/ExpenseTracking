@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.0.21"
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -40,6 +43,21 @@ android {
 }
 
 dependencies {
+
+    val nav_version = "2.9.0"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    implementation("com.google.dagger:hilt-android:2.56.2")
+    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
+
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
+
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
 
     implementation("androidx.compose.material:material-icons-extended:1.6.0")
     implementation(libs.androidx.core.ktx)

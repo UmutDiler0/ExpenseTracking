@@ -1,4 +1,4 @@
-package com.expense.expensetracking.component
+package com.expense.expensetracking.util.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
