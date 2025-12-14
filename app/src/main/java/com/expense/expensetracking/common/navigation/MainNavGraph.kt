@@ -31,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.expense.expensetracking.common.util.HomeGraph
 import com.expense.expensetracking.presentation.cards.navigation.cardNavGraph
 import com.expense.expensetracking.presentation.home.navigation.homeNavGraph
+import com.expense.expensetracking.presentation.profile.navigation.profileNavGraph
 import com.expense.expensetracking.ui.theme.PrimaryGreen
 import com.expense.expensetracking.ui.theme.SurfaceDark
 
@@ -103,6 +104,7 @@ fun MainNavGraph(
         ) {
             homeNavGraph(rootNavController)
             cardNavGraph(rootNavController)
+            profileNavGraph(rootNavController)
         }
     }
 }
