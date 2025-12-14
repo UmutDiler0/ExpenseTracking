@@ -21,8 +21,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.expense.expensetracking.common.component.AppBtn
 import com.expense.expensetracking.common.component.BackBtn
+import com.expense.expensetracking.common.component.LoadingScreen
+import com.expense.expensetracking.common.util.UiState
 import com.expense.expensetracking.presentation.auth.component.AuthEditText
 import com.expense.expensetracking.presentation.auth.component.AuthHeader
 
@@ -32,7 +35,29 @@ fun ForgotPasswordScreen(
     onPopBackStack: () -> Unit
 ){
     val state by viewModel.uiDataState.collectAsStateWithLifecycle()
+    when(state.uiState){
+        is UiState.Idle -> {
+            ForgotPasswordIdleScreen(viewModel, state){
+                onPopBackStack()
+            }
+        }
+        is UiState.Error -> {
 
+        }
+        is UiState.Success<*> -> {}
+        is UiState.Loading -> {
+            LoadingScreen()
+        }
+    }
+
+}
+
+@Composable
+fun ForgotPasswordIdleScreen(
+    viewModel: FPViewModel,
+    state: FPState,
+    onPopBackStack: () -> Unit
+){
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 

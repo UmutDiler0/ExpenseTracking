@@ -70,8 +70,8 @@ fun LoginScreen(
                 }
             )
             AuthEditText(
-                label = "Password",
-                hint = "Password",
+                label = "Şifre",
+                hint = "Şifre",
                 isPassword = true,
                 visible = state.isPasswordVisible,
                 value = state.password,
