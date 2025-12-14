@@ -26,10 +26,22 @@ object HomeGraph
 object Home
 
 @Serializable
+object MainGraph
+
+@Serializable
+object CardGraph
+
+@Serializable
 object Cards
 
 @Serializable
+object ReportsGraph
+
+@Serializable
 object Reports
+
+@Serializable
+object ProfileGraph
 
 @Serializable
 object Profile

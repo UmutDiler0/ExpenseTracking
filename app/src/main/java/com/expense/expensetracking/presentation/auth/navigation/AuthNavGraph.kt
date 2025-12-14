@@ -7,6 +7,7 @@ import androidx.navigation.navigation
 import com.expense.expensetracking.common.util.Auth
 import com.expense.expensetracking.common.util.ForgotPassword
 import com.expense.expensetracking.common.util.Login
+import com.expense.expensetracking.common.util.MainGraph
 import com.expense.expensetracking.common.util.Register
 import com.expense.expensetracking.presentation.auth.fogot_password.ForgotPasswordScreen
 import com.expense.expensetracking.presentation.auth.login.LoginScreen
@@ -20,7 +21,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController){
                 onNavigateRegisterScreen = {
                     navController.navigate(Register)
                 },
-                onNavigateHomeScreen = {},
+                onNavigateHomeScreen = {
+                    navController.navigate(MainGraph)
+                },
             ) {
                 navController.navigate(ForgotPassword)
             }
@@ -28,7 +31,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController){
 
         composable<Register> {
             RegisterScreen(
-                onNavigateHomeScreen = {}
+                onNavigateHomeScreen = {
+                    navController.navigate(MainGraph)
+                }
             ) {
                 navController.navigate(Login)
             }

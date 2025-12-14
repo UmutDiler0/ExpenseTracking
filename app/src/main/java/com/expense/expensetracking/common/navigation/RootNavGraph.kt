@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.expense.expensetracking.common.util.Auth
+import com.expense.expensetracking.common.util.MainGraph
 import com.expense.expensetracking.common.util.OnBoarding
 import com.expense.expensetracking.common.util.Splash
 import com.expense.expensetracking.presentation.auth.navigation.authNavGraph
@@ -36,5 +37,9 @@ fun RootNavController(
             }
         }
         authNavGraph(navController)
+
+        composable<MainGraph> {
+            MainNavGraph(navController)
+        }
     }
 }
