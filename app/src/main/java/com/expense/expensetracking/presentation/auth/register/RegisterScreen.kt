@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -16,6 +18,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.expense.expensetracking.common.component.AppBtn
 import com.expense.expensetracking.presentation.auth.component.AuthEditText
 import com.expense.expensetracking.presentation.auth.component.AuthHeader
@@ -23,11 +26,13 @@ import com.expense.expensetracking.presentation.auth.component.AuthRegisterLogin
 
 @Composable
 fun RegisterScreen(
+    viewModel: RegisterViewModel = hiltViewModel(),
     onNavigateHomeScreen: () -> Unit,
     onNavigateLoginScreen: () -> Unit
 ){
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val state by viewModel.uiDataState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -46,28 +51,42 @@ fun RegisterScreen(
         ) {
             AuthEditText(
                 label = "Email",
-                hint = "Email",
+                hint = "Email adresinizi girin",
                 isPassword = false,
-                value = "",
+                value = state.email,
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
-                onValueChange = { }
+                onValueChange = { newEmail ->
+                    viewModel.handleIntent(RegisterIntent.SetEmail(newEmail))
+                }
             )
+
             AuthEditText(
                 label = "Password",
-                hint = "Password",
+                hint = "Şifrenizi belirleyin",
                 isPassword = true,
-                value = "",
+                visible = state.isPasswordVisible,
+                value = state.password,
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done,
+
+                onClick = {
+                    viewModel.handleIntent(RegisterIntent.SetPasswordVisiblity)
+                },
+
                 onImeAction = {
                     keyboardController?.hide()
                     focusManager.clearFocus()
                 },
-                onValueChange = { }
+
+                onValueChange = { newPassword ->
+                    viewModel.handleIntent(RegisterIntent.SetPassword(newPassword))
+                }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            AppBtn("Kayıt Ol") { }
+            AppBtn("Kayıt Ol") {
+                onNavigateHomeScreen()
+            }
         }
         AuthRegisterLogin(
             "Hesabın var mı?",

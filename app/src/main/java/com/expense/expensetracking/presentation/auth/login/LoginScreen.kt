@@ -8,31 +8,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountBalanceWallet
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.expense.expensetracking.common.component.AppBtn
 import com.expense.expensetracking.presentation.auth.component.AuthEditText
 import com.expense.expensetracking.presentation.auth.component.AuthHeader
@@ -46,7 +38,7 @@ fun LoginScreen(
     onNavigateRegisterScreen: () -> Unit,
     onNavigateHomeScreen: () -> Unit,
     onNavigateForgotPassword: () -> Unit
-){
+) {
     val state by viewModel.uiDataState.collectAsState()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -126,7 +118,9 @@ fun LoginScreen(
                     }
                 )
             }
-            AppBtn("Giriş Yap") { }
+            AppBtn("Giriş Yap") {
+                onNavigateHomeScreen()
+            }
         }
         AuthRegisterLogin(
             "Hesabın yok mu?",
