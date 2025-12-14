@@ -29,6 +29,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.expense.expensetracking.common.util.HomeGraph
+import com.expense.expensetracking.presentation.cards.navigation.cardNavGraph
 import com.expense.expensetracking.presentation.home.navigation.homeNavGraph
 import com.expense.expensetracking.ui.theme.PrimaryGreen
 import com.expense.expensetracking.ui.theme.SurfaceDark
@@ -57,10 +58,7 @@ fun MainNavGraph(
                         onClick = {
                             bottomNavController.navigate(item.route) {
 
-                                popUpTo(bottomNavController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
+                                launchSingleTop = false
                                 restoreState = true
                             }
                         },
@@ -104,7 +102,7 @@ fun MainNavGraph(
             modifier = Modifier.padding(innerPadding)
         ) {
             homeNavGraph(rootNavController)
-
+            cardNavGraph(rootNavController)
         }
     }
 }

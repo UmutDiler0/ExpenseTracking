@@ -10,6 +10,7 @@ import androidx.navigation.navigation
 import com.expense.expensetracking.common.util.Auth
 import com.expense.expensetracking.common.util.MainGraph
 import com.expense.expensetracking.common.util.OnBoarding
+import com.expense.expensetracking.common.util.Register
 import com.expense.expensetracking.common.util.Splash
 import com.expense.expensetracking.presentation.auth.navigation.authNavGraph
 import com.expense.expensetracking.presentation.onboarding.ui.OnBoardingScreen
@@ -26,14 +27,22 @@ fun RootNavController(
         composable<Splash> {
             SplashScreen(
                 onNavigateOnboardingScreen = {
-                    navController.navigate(OnBoarding)
+                    navController.navigate(OnBoarding){
+                        popUpTo(Splash) {
+                            inclusive = true
+                        }
+                    }
                 },
                 onNavigateLoginScreen = {}
             ) { }
         }
         composable<OnBoarding>{
             OnBoardingScreen {
-                navController.navigate(Auth)
+                navController.navigate(Auth){
+                    popUpTo(OnBoarding) {
+                        inclusive = true
+                    }
+                }
             }
         }
         authNavGraph(navController)
