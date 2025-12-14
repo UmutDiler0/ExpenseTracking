@@ -28,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.dp
 import com.expense.expensetracking.ui.theme.InputBg
@@ -40,13 +42,15 @@ fun AuthEditText(
     label: String,
     hint: String,
     isPassword: Boolean,
+    visible: Boolean = false,
     value: String,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
     onImeAction: () -> Unit = {},
+    onClick: () -> Unit = {},
     onValueChange: (String) -> Unit
 ){
-    var visible by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -89,17 +93,13 @@ fun AuthEditText(
             ),
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
+                .fillMaxWidth(),
             placeholder = {
                 Text(
                     hint,
-                    modifier = Modifier.offset(y = (-2).dp)
                 )
             },
-            textStyle = LocalTextStyle.current.copy(
-                baselineShift = BaselineShift(-0.1f)
-            ),
+
             keyboardOptions = KeyboardOptions(
                 keyboardType = keyboardType,
                 imeAction = imeAction
@@ -119,11 +119,16 @@ fun AuthEditText(
                         imageVector = if(visible) Icons.Rounded.Visibility else Icons.Rounded.VisibilityOff,
                         contentDescription = "",
                         modifier = Modifier.clickable{
-                            visible = !visible
+                            onClick()
                         }
                     )
                 }
-            }
+            },
+            visualTransformation = if (isPassword && !visible) {
+                PasswordVisualTransformation()
+            } else {
+                VisualTransformation.None
+            },
         )
     }
 }

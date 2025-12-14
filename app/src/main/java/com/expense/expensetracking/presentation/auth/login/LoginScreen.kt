@@ -17,6 +17,8 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +30,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.expense.expensetracking.common.component.AppBtn
 import com.expense.expensetracking.presentation.auth.component.AuthEditText
@@ -38,10 +42,12 @@ import com.expense.expensetracking.ui.theme.PrimaryGreen
 
 @Composable
 fun LoginScreen(
+    viewModel: LoginViewModel = hiltViewModel(),
     onNavigateRegisterScreen: () -> Unit,
     onNavigateHomeScreen: () -> Unit,
     onNavigateForgotPassword: () -> Unit
 ){
+    val state by viewModel.uiDataState.collectAsState()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -64,23 +70,31 @@ fun LoginScreen(
                 label = "Email",
                 hint = "Email",
                 isPassword = false,
-                value = "",
+                value = state.email,
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
-                onValueChange = { }
+                onValueChange = {
+                    viewModel.handleIntent(LoginIntent.SetEmail(it))
+                }
             )
             AuthEditText(
                 label = "Password",
                 hint = "Password",
                 isPassword = true,
-                value = "",
+                visible = state.isPasswordVisible,
+                value = state.password,
+                onClick = {
+                    viewModel.handleIntent(LoginIntent.SetPasswordVisibility)
+                },
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done,
                 onImeAction = {
                     keyboardController?.hide()
                     focusManager.clearFocus()
                 },
-                onValueChange = { }
+                onValueChange = {
+                    viewModel.handleIntent(LoginIntent.SetPassword(it))
+                }
             )
             Row(
                 modifier = Modifier
@@ -95,8 +109,10 @@ fun LoginScreen(
                 ) {
                     Text("Beni Hatırla", fontFamily = Manrope, fontSize = 12.sp)
                     Checkbox(
-                        checked = false,
-                        onCheckedChange = null
+                        checked = state.isChecked,
+                        onCheckedChange = {
+                            viewModel.handleIntent(LoginIntent.SetRememberme)
+                        }
                     )
                 }
                 Text(
