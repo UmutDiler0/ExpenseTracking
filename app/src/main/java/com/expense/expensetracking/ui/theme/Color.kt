@@ -14,6 +14,8 @@ val PrimaryGreen = Color(0xFF13EC5B)
 val BackgroundDark = Color(0xFF102216)
 val BackgroundLight = Color(0xFFF6F8F6)
 
+val BorderColor = Color(0x0DFFFFFF)
+
 // Surface Colors (Derived)
 val SurfaceDark = Color(0xFF1C2D22) // Slightly lighter than bg
 val SurfaceLight = Color(0xFFFFFFFF)
