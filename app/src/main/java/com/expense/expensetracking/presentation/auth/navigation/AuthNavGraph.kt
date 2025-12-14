@@ -8,6 +8,7 @@ import com.expense.expensetracking.common.util.Auth
 import com.expense.expensetracking.common.util.ForgotPassword
 import com.expense.expensetracking.common.util.Login
 import com.expense.expensetracking.common.util.Register
+import com.expense.expensetracking.presentation.auth.fogot_password.ForgotPasswordScreen
 import com.expense.expensetracking.presentation.auth.login.LoginScreen
 import com.expense.expensetracking.presentation.auth.register.RegisterScreen
 
@@ -20,7 +21,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController){
                     navController.navigate(Register)
                 },
                 onNavigateHomeScreen = {},
-            ) { }
+            ) {
+                navController.navigate(ForgotPassword)
+            }
         }
 
         composable<Register> {
@@ -31,6 +34,10 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController){
             }
         }
 
-        composable<ForgotPassword> {  }
+        composable<ForgotPassword> {
+            ForgotPasswordScreen {
+                navController.popBackStack()
+            }
+        }
     }
 }

@@ -89,6 +89,7 @@ fun AuthEditText(
             placeholder = {
                 Text(
                     hint,
+                    maxLines = 1
                 )
             },
 
