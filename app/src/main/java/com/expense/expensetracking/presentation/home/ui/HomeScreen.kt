@@ -35,7 +35,7 @@ fun HomeScreen(
             header = "Ana Ekran",
             isBackBtnActive = false,
             isTrailingIconActive = true
-        )
+        ){}
         BalanceCard()
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),

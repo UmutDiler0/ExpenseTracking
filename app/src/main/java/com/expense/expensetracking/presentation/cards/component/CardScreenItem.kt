@@ -1,6 +1,7 @@
 package com.expense.expensetracking.presentation.cards.component
 
 import android.view.Surface
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,10 +31,13 @@ import com.expense.expensetracking.ui.theme.TextBlack
 
 @Composable
 fun CardScreenItem(
-    item: CardItem
+    item: CardItem,
+    onClick: () -> Unit
 ){
     Card(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).clickable{
+            onClick()
+        },
         colors = CardDefaults.cardColors(
             containerColor = SurfaceDark
         )

@@ -3,9 +3,11 @@ package com.expense.expensetracking.common.component
 import android.graphics.drawable.Icon
 import android.media.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Notifications
@@ -26,6 +28,7 @@ fun CustomTopAppBar(
     header: String,
     isBackBtnActive: Boolean,
     isTrailingIconActive: Boolean,
+    onClick: () -> Unit
 ){
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
@@ -35,8 +38,11 @@ fun CustomTopAppBar(
         if(isBackBtnActive){
             Icon(
                 imageVector = Icons.Rounded.ArrowBackIosNew,
-                ""
+                "",
+                modifier = Modifier.size(32.dp)
             )
+        }else{
+            Box(modifier = Modifier)
         }
         Text(
             header,
@@ -46,8 +52,11 @@ fun CustomTopAppBar(
         if(isTrailingIconActive){
             Icon(
                 imageVector = icon,
-                contentDescription = ""
+                contentDescription = "",
+                modifier = Modifier.size(32.dp)
             )
+        }else{
+            Box(modifier = Modifier)
         }
 
     }

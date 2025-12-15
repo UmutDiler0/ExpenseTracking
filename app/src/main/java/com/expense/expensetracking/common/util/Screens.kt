@@ -35,6 +35,12 @@ object CardGraph
 object Cards
 
 @Serializable
+object AddCardScreen
+
+@Serializable
+object CardDetail
+
+@Serializable
 object ReportsGraph
 
 @Serializable

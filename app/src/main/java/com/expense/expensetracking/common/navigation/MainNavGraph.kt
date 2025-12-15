@@ -104,7 +104,7 @@ fun MainNavGraph(
             modifier = Modifier.padding(innerPadding)
         ) {
             homeNavGraph(rootNavController)
-            cardNavGraph(rootNavController)
+            cardNavGraph(rootNavController,bottomNavController)
             profileNavGraph(rootNavController)
             reportNavGraph(rootNavController)
         }

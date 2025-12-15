@@ -12,13 +12,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.expense.expensetracking.common.component.CustomTopAppBar
 import com.expense.expensetracking.domain.model.CardItem
 import com.expense.expensetracking.presentation.cards.component.CardScreenItem
 
 @Composable
 fun CardsScreen(
-    viewModel: CardSharedViewModel = hiltViewModel()
+    viewModel: CardSharedViewModel = hiltViewModel(),
+    onNavigateCardDetail: () -> Unit,
+    onNavigateAddItem: () -> Unit
 ){
     val state by viewModel.uiDataState.collectAsState()
 
@@ -31,10 +34,12 @@ fun CardsScreen(
                 header = "Kartlarım",
                 isBackBtnActive = false,
                 isTrailingIconActive = true
-            )
+            ){}
         }
         items(CardItem.tempList){ card ->
-            CardScreenItem(card)
+            CardScreenItem(card){
+                onNavigateCardDetail()
+            }
         }
     }
 }
