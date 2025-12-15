@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Icon
@@ -21,24 +22,33 @@ import com.expense.expensetracking.ui.theme.Manrope
 
 @Composable
 fun CustomTopAppBar(
+    icon: ImageVector,
+    header: String,
+    isBackBtnActive: Boolean,
+    isTrailingIconActive: Boolean,
 ){
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Icon(
-            imageVector = Icons.Rounded.Person,
-            ""
-        )
+        if(isBackBtnActive){
+            Icon(
+                imageVector = Icons.Rounded.ArrowBackIosNew,
+                ""
+            )
+        }
         Text(
-            "Ana Ekran",
+            header,
             fontFamily = Manrope,
             fontWeight = FontWeight.SemiBold
         )
-        Icon(
-            imageVector = Icons.Rounded.Notifications,
-            contentDescription = ""
-        )
+        if(isTrailingIconActive){
+            Icon(
+                imageVector = icon,
+                contentDescription = ""
+            )
+        }
+
     }
 }

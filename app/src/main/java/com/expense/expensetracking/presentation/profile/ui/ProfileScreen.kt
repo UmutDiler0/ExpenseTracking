@@ -60,7 +60,6 @@ fun ProfileScreen(
     ) {
         item { HeaderSection(title = "Profil") }
 
-        // Avatar & Info
         item {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 32.dp),

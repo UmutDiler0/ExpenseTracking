@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -28,7 +30,12 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
-        CustomTopAppBar()
+        CustomTopAppBar(
+            icon = Icons.Rounded.Notifications,
+            header = "Ana Ekran",
+            isBackBtnActive = false,
+            isTrailingIconActive = true
+        )
         BalanceCard()
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),

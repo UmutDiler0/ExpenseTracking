@@ -44,6 +44,7 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.benchmark.common)
     val nav_version = "2.9.0"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
