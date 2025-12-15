@@ -8,6 +8,7 @@ import com.expense.expensetracking.common.util.AddCardScreen
 import com.expense.expensetracking.common.util.CardDetail
 import com.expense.expensetracking.common.util.CardGraph
 import com.expense.expensetracking.common.util.Cards
+import com.expense.expensetracking.presentation.cards.addcard.AddCardScreen
 import com.expense.expensetracking.presentation.cards.card_detail.CardDetailScreen
 import com.expense.expensetracking.presentation.cards.ui.CardsScreen
 
@@ -34,7 +35,7 @@ fun NavGraphBuilder.cardNavGraph(
         }
 
         composable<AddCardScreen> {
-
+            AddCardScreen {  }
         }
     }
 }

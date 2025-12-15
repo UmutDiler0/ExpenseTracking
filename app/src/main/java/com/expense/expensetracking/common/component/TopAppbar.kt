@@ -2,6 +2,7 @@ package com.expense.expensetracking.common.component
 
 import android.graphics.drawable.Icon
 import android.media.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -42,7 +43,7 @@ fun CustomTopAppBar(
                 modifier = Modifier.size(32.dp)
             )
         }else{
-            Box(modifier = Modifier)
+            Box(modifier = Modifier.size(32.dp))
         }
         Text(
             header,
@@ -53,10 +54,12 @@ fun CustomTopAppBar(
             Icon(
                 imageVector = icon,
                 contentDescription = "",
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(32.dp).clickable{
+                    onClick()
+                }
             )
         }else{
-            Box(modifier = Modifier)
+            Box(modifier = Modifier.size(32.dp))
         }
 
     }

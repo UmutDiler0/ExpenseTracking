@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +29,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.expense.expensetracking.common.util.Cards
+import com.expense.expensetracking.common.util.Home
 import com.expense.expensetracking.common.util.HomeGraph
+import com.expense.expensetracking.common.util.Profile
+import com.expense.expensetracking.common.util.Reports
 import com.expense.expensetracking.presentation.cards.navigation.cardNavGraph
 import com.expense.expensetracking.presentation.home.navigation.homeNavGraph
 import com.expense.expensetracking.presentation.profile.navigation.profileNavGraph
@@ -44,56 +49,65 @@ fun MainNavGraph(
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
+    val isBottomBarVisible = remember(currentDestination) {
+        currentDestination?.hasRoute<Home>() == true ||
+                currentDestination?.hasRoute<Cards>() == true ||
+                currentDestination?.hasRoute<Profile>() == true ||
+                currentDestination?.hasRoute<Reports>() == true
+    }
+
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                containerColor = SurfaceDark
-            ) {
-                bottomNavItems.forEach { item ->
+            if(isBottomBarVisible){
+                NavigationBar(
+                    containerColor = SurfaceDark
+                ) {
+                    bottomNavItems.forEach { item ->
 
-                    val isSelected = currentDestination?.hierarchy?.any {
-                        it.hasRoute(item.route::class)
-                    } == true
+                        val isSelected = currentDestination?.hierarchy?.any {
+                            it.hasRoute(item.route::class)
+                        } == true
 
-                    NavigationBarItem(
-                        selected = isSelected,
-                        onClick = {
-                            bottomNavController.navigate(item.route) {
+                        NavigationBarItem(
+                            selected = isSelected,
+                            onClick = {
+                                bottomNavController.navigate(item.route) {
 
-                                launchSingleTop = false
-                                restoreState = true
-                            }
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            indicatorColor = Color.Transparent,
-                            selectedIconColor = PrimaryGreen,
-                            unselectedIconColor = Color.Gray
-                        ),
-                        icon = {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    imageVector = item.icon,
-                                    contentDescription = item.label,
-                                )
-
-                                if (isSelected) {
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Box(
-                                        modifier = Modifier
-                                            .width(20.dp)
-                                            .height(2.dp)
-                                            .background(
-                                                color = PrimaryGreen,
-                                                shape = RoundedCornerShape(100)
-                                            )
-                                    )
+                                    launchSingleTop = false
+                                    restoreState = true
                                 }
-                            }
-                        },
-                    )
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                indicatorColor = Color.Transparent,
+                                selectedIconColor = PrimaryGreen,
+                                unselectedIconColor = Color.Gray
+                            ),
+                            icon = {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        imageVector = item.icon,
+                                        contentDescription = item.label,
+                                    )
+
+                                    if (isSelected) {
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Box(
+                                            modifier = Modifier
+                                                .width(20.dp)
+                                                .height(2.dp)
+                                                .background(
+                                                    color = PrimaryGreen,
+                                                    shape = RoundedCornerShape(100)
+                                                )
+                                        )
+                                    }
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }

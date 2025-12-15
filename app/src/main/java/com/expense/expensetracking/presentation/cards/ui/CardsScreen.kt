@@ -34,7 +34,9 @@ fun CardsScreen(
                 header = "Kartlarım",
                 isBackBtnActive = false,
                 isTrailingIconActive = true
-            ){}
+            ){
+                onNavigateAddItem()
+            }
         }
         items(CardItem.tempList){ card ->
             CardScreenItem(card){
