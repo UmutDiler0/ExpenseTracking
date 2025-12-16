@@ -1,16 +1,13 @@
-package com.expense.expensetracking.presentation.home.spend_balance
+package com.expense.expensetracking.presentation.home.add_balance
 
-import android.R.attr.textColor
+import android.graphics.Paint
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material.icons.filled.CreditCard
-import androidx.compose.material.icons.rounded.Carpenter
-import androidx.compose.material3.ListItemDefaults.contentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,7 +29,7 @@ import com.expense.expensetracking.ui.theme.TextGrayLight
 import com.expense.expensetracking.ui.theme.TextLight
 
 @Composable
-fun SpendBalanceScreen(
+fun AddBalanceScreen(
     onPopBackStack: () -> Unit
 ){
     val contentColor = if (isSystemInDarkTheme()) TextLight else TextDark
@@ -43,48 +40,24 @@ fun SpendBalanceScreen(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         CustomTopAppBar(
-            icon = Icons.Rounded.Carpenter,
-            header = "Gider Ekle",
+            icon = Icons.Default.CreditCard,
+            header = "Gelir Ekle",
             isBackBtnActive = true,
             isTrailingIconActive = false
         ) {
             onPopBackStack()
         }
-
         CustomInputField(
-            label = "Tutar",
+            label = "Miktar",
             value = "",
-            onValueChange = { },
-            placeholder = "0,00 ₺",
+            onValueChange = {},
+            placeholder = "0,00",
             isNumeric = true,
             isSingleLine = true,
             backgroundColor = if (isSystemInDarkTheme()) SurfaceDark else SurfaceLight,
             textColor = contentColor,
             labelColor = labelColor
         )
-
-        Column {
-            Text(
-                text = "Kategori Seçimi",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = labelColor
-                ),
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-
-            SelectionRow(
-                icon = Icons.AutoMirrored.Filled.Label,
-                title = "Kategori Seç",
-                backgroundColor = if (isSystemInDarkTheme()) SurfaceDark else SurfaceLight,
-                contentColor = contentColor,
-                iconBgColor = if (isSystemInDarkTheme()) Color.White.copy(0.1f) else Color(
-                    0xFFD1D5DB
-                )
-            )
-        }
-
         Column {
             Text(
                 text = "Kart Seçimi",

@@ -9,6 +9,7 @@ import com.expense.expensetracking.common.util.AddBalance
 import com.expense.expensetracking.common.util.Home
 import com.expense.expensetracking.common.util.HomeGraph
 import com.expense.expensetracking.common.util.SpendBalance
+import com.expense.expensetracking.presentation.home.add_balance.AddBalanceScreen
 import com.expense.expensetracking.presentation.home.spend_balance.SpendBalanceScreen
 import com.expense.expensetracking.presentation.home.ui.HomeScreen
 
@@ -27,7 +28,11 @@ fun NavGraphBuilder.homeNavGraph(
                 bottomNavController.navigate(SpendBalance)
             }
         }
-        composable<AddBalance> {  }
+        composable<AddBalance> {
+            AddBalanceScreen {
+                bottomNavController.popBackStack()
+            }
+        }
         composable<SpendBalance> {
             SpendBalanceScreen(){
                 bottomNavController.popBackStack()

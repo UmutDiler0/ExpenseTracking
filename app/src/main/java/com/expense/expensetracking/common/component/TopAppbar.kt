@@ -40,7 +40,9 @@ fun CustomTopAppBar(
             Icon(
                 imageVector = Icons.Rounded.ArrowBackIosNew,
                 "",
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(32.dp).clickable{
+                    onClick()
+                }
             )
         }else{
             Box(modifier = Modifier.size(32.dp))
