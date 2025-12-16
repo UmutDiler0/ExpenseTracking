@@ -8,7 +8,22 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(): BaseViewModel<HomeState, HomeIntent>(
     initialState = HomeState()
 ) {
-    override fun handleIntent(intent: HomeIntent) {
-        TODO("Not yet implemented")
+    override public fun handleIntent(intent: HomeIntent) {
+        when(intent){
+            is HomeIntent.AddSpendValue -> {
+                handleDataState {
+                    copy(
+                        spendBalance = intent.value
+                    )
+                }
+            }
+            is HomeIntent.AddBalanceValue -> {
+                handleDataState {
+                    copy(
+                        addBalance = intent.value
+                    )
+                }
+            }
+        }
     }
 }

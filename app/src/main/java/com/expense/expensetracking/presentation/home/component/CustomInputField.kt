@@ -50,7 +50,7 @@ fun CustomInputField(
 
         BasicTextField(
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = { onValueChange(it) },
             keyboardOptions = if (isNumeric) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions.Default,
             singleLine = isSingleLine,
             textStyle = TextStyle(

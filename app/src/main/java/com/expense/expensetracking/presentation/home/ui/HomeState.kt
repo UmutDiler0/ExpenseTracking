@@ -6,5 +6,7 @@ import com.expense.expensetracking.domain.model.ExpenseItem
 data class HomeState(
     val uiState: UiState = UiState.Idle,
     val totalBalance: String = "",
-    val expenseList: List<ExpenseItem> = listOf()
+    val expenseList: List<ExpenseItem> = listOf(),
+    val addBalance: String = "",
+    val spendBalance: String = "",
 )

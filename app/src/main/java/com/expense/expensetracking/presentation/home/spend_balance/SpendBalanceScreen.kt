@@ -13,6 +13,8 @@ import androidx.compose.material.icons.rounded.Carpenter
 import androidx.compose.material3.ListItemDefaults.contentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,10 +22,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.expense.expensetracking.common.component.AppBtn
 import com.expense.expensetracking.common.component.CustomTopAppBar
 import com.expense.expensetracking.presentation.home.component.CustomInputField
 import com.expense.expensetracking.presentation.home.component.SelectionRow
+import com.expense.expensetracking.presentation.home.ui.HomeIntent
+import com.expense.expensetracking.presentation.home.ui.HomeViewModel
 import com.expense.expensetracking.ui.theme.SurfaceDark
 import com.expense.expensetracking.ui.theme.SurfaceLight
 import com.expense.expensetracking.ui.theme.TextDark
@@ -33,8 +38,10 @@ import com.expense.expensetracking.ui.theme.TextLight
 
 @Composable
 fun SpendBalanceScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
     onPopBackStack: () -> Unit
 ){
+    val state by viewModel.uiDataState.collectAsState()
     val contentColor = if (isSystemInDarkTheme()) TextLight else TextDark
     val labelColor = if (isSystemInDarkTheme()) TextGrayDark else TextGrayLight
     Column(
@@ -53,8 +60,8 @@ fun SpendBalanceScreen(
 
         CustomInputField(
             label = "Tutar",
-            value = "",
-            onValueChange = { },
+            value = state.spendBalance,
+            onValueChange = { viewModel.handleIntent(HomeIntent.AddSpendValue(it))},
             placeholder = "0,00 ₺",
             isNumeric = true,
             isSingleLine = true,
