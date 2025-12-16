@@ -23,7 +23,8 @@ import com.expense.expensetracking.presentation.home.component.ExpensesList
 
 @Composable
 fun HomeScreen(
-
+ onNavigateAddBalanceScreen: () -> Unit,
+ onNavigateSpendBalanceScreen: () -> Unit
 ){
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -42,8 +43,13 @@ fun HomeScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            AddOrDecBalanceBtn(true) { }
-            AddOrDecBalanceBtn(false) { }
+            AddOrDecBalanceBtn(true) {
+                onNavigateSpendBalanceScreen()
+
+            }
+            AddOrDecBalanceBtn(false) {
+                onNavigateAddBalanceScreen()
+            }
         }
         Spacer(modifier = Modifier.height(32.dp))
         ExpensesList()

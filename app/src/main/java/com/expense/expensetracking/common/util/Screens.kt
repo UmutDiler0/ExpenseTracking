@@ -26,6 +26,12 @@ object HomeGraph
 object Home
 
 @Serializable
+object AddBalance
+
+@Serializable
+object SpendBalance
+
+@Serializable
 object MainGraph
 
 @Serializable

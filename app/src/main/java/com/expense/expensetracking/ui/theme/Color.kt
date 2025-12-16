@@ -16,6 +16,9 @@ val BackgroundLight = Color(0xFFF6F8F6)
 
 val BorderColor = Color(0x0DFFFFFF)
 
+val TextDark = Color(0xFF111827) // Gray-900
+val TextLight = Color.White
+
 // Surface Colors (Derived)
 val SurfaceDark = Color(0xFF1C2D22) // Slightly lighter than bg
 val SurfaceLight = Color(0xFFFFFFFF)

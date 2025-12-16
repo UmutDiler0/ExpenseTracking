@@ -22,7 +22,9 @@ fun AddOrDecBalanceBtn(
     onClick: () -> Unit
 ){
     Button(
-        onClick = {},
+        onClick = {
+            onClick()
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = if(isAddBalance) PrimaryGreen else TextBlack
         ),
