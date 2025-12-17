@@ -1,14 +1,22 @@
 package com.expense.expensetracking.presentation.auth.register
 
+import androidx.lifecycle.viewModelScope
 import com.expense.expensetracking.BaseViewModel
 import com.expense.expensetracking.common.util.AuthErrors
 import com.expense.expensetracking.common.util.Register
+import com.expense.expensetracking.common.util.Resource
+import com.expense.expensetracking.common.util.UiState
+import com.expense.expensetracking.data.repo.AuthRepository
+import com.expense.expensetracking.domain.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(): BaseViewModel<RegisterState, RegisterIntent>(
-    initialState = RegisterState()
+class RegisterViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+): BaseViewModel<RegisterState, RegisterIntent>(
+    initialState = RegisterState(),
 ) {
     public override fun handleIntent(intent: RegisterIntent) {
         when(intent) {
@@ -27,7 +35,6 @@ class RegisterViewModel @Inject constructor(): BaseViewModel<RegisterState, Regi
                     val email = uiDataState.value.email
                     val password = uiDataState.value.password
 
-                    // Kural 1: Boş alan kontrolü (İsteğe bağlı ama önerilir)
                     if (email.isBlank() || password.isBlank()) {
                         handleDataState {
                             copy(isError = true, errorMessage = AuthErrors.EMPTY_FIELDS)
@@ -77,6 +84,53 @@ class RegisterViewModel @Inject constructor(): BaseViewModel<RegisterState, Regi
                     copy(
                         surname = intent.surname
                     )
+                }
+            }
+            is RegisterIntent.OnClickRegisterBtn -> {
+                register()
+            }
+        }
+    }
+    fun register() {
+        viewModelScope.launch {
+            val currentState = uiDataState.value
+            val newUser = User(
+                email = currentState.email,
+                password = currentState.password,
+                name = currentState.name,
+                surname = currentState.surname
+            )
+
+            authRepository.register(newUser).collect { resource ->
+                when (resource) {
+                    is Resource.Loading -> {
+                        handleDataState {
+                            copy(uiState = UiState.Loading)
+                        }
+                    }
+                    is Resource.Success -> {
+                        handleDataState {
+                            copy(
+                                uiState = UiState.Success,
+                                isError = false,
+                                errorMessage = ""
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        handleDataState {
+                            copy(
+                                uiState = UiState.Error(resource.message),
+                                isError = true,
+                                errorMessage = resource.message
+                            )
+                        }
+                    }
+                    is Resource.Idle -> {
+                        handleDataState {
+                            copy(uiState = UiState.Idle)
+                        }
+                    }
                 }
             }
         }

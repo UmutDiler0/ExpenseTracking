@@ -8,4 +8,6 @@ sealed class RegisterIntent {
     data class SetSurname(val surname: String): RegisterIntent()
     data class SetRegisterStep(val registerStep: RegisterStep): RegisterIntent()
     data object SetPasswordVisiblity: RegisterIntent()
+
+    data object OnClickRegisterBtn: RegisterIntent()
 }

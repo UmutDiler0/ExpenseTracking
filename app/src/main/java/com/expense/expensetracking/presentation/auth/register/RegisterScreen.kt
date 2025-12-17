@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,7 +41,15 @@ fun RegisterScreen(
     val state by viewModel.uiDataState.collectAsState()
 
     when (state.uiState) {
-        is UiState.Idle -> {
+        is UiState.Loading -> {
+            LoadingScreen()
+        }
+        is UiState.Success -> {
+            LaunchedEffect(Unit) {
+                onNavigateHomeScreen()
+            }
+        }
+        else -> {
             RegisterIdle(
                 viewModel,
                 state,
@@ -49,16 +58,7 @@ fun RegisterScreen(
                 onNavigateLoginScreen()
             }
         }
-
-        is UiState.Loading -> {
-            LoadingScreen()
-        }
-
-        is UiState.Error -> {}
-        is UiState.Success<*> -> {}
     }
-
-
 }
 
 @Composable
@@ -172,7 +172,7 @@ fun RegisterIdle(
             Spacer(modifier = Modifier.height(8.dp))
             AppBtn("Kayıt Ol") {
                 if(state.registerStep == RegisterStep.NAME_SURNAME){
-                    onNavigateHomeScreen()
+                    viewModel.handleIntent(RegisterIntent.OnClickRegisterBtn)
                 }else{
                     viewModel.handleIntent(RegisterIntent.SetRegisterStep(RegisterStep.NAME_SURNAME))
                 }

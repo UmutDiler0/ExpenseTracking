@@ -8,4 +8,6 @@ sealed class LoginIntent {
     data class SetPassword(val password: String): LoginIntent()
     data object SetRememberme: LoginIntent()
     data object SetPasswordVisibility: LoginIntent()
+
+    object ClickLoginBtn: LoginIntent()
 }

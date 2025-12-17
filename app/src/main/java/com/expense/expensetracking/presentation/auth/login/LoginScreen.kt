@@ -13,12 +13,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
@@ -43,26 +46,25 @@ fun LoginScreen(
 ) {
     val state by viewModel.uiDataState.collectAsState()
 
-
-    when(state.uiState){
-        is UiState.Idle -> {
-            LoginIdle(
-                viewModel,
-                state = state,
-                onNavigateRegisterScreen,
-                onNavigateHomeScreen
-            ) {
-                onNavigateForgotPassword()
-            }
-        }
-        is UiState.Error -> {}
-        is UiState.Success<*> -> {}
+    when (state.uiState) {
         is UiState.Loading -> {
             LoadingScreen()
         }
+        is UiState.Success -> {
+            LaunchedEffect(Unit) {
+                onNavigateHomeScreen()
+            }
+        }
+        else -> {
+            LoginIdle(
+                viewModel = viewModel,
+                state = state,
+                onNavigateRegisterScreen = onNavigateRegisterScreen,
+                onNavigateHomeScreen = onNavigateHomeScreen,
+                onNavigateForgotPassword = onNavigateForgotPassword
+            )
+        }
     }
-
-
 }
 
 @Composable
@@ -95,6 +97,7 @@ fun LoginIdle(
                 hint = "Email",
                 isPassword = false,
                 value = state.email,
+                isError = state.isError,
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
                 onValueChange = {
@@ -105,6 +108,7 @@ fun LoginIdle(
                 label = "Şifre",
                 hint = "Şifre",
                 isPassword = true,
+                isError = state.isError,
                 visible = state.isPasswordVisible,
                 value = state.password,
                 onClick = {
@@ -151,12 +155,22 @@ fun LoginIdle(
                 )
             }
             AppBtn("Giriş Yap") {
-                onNavigateHomeScreen()
+                viewModel.handleIntent(LoginIntent.ClickLoginBtn)
+            }
+            if(state.isError){
+                Text(
+                    state.errorMessage,
+                    color = Color.Red,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = Manrope
+                )
             }
         }
         AuthRegisterLogin(
             "Hesabın yok mu?",
             "Hesap Oluştur"
-        ) { onNavigateRegisterScreen() }
+        ) {
+            onNavigateRegisterScreen()
+        }
     }
 }

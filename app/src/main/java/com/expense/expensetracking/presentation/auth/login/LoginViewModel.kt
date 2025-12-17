@@ -1,11 +1,18 @@
 package com.expense.expensetracking.presentation.auth.login
 
+import androidx.lifecycle.viewModelScope
 import com.expense.expensetracking.BaseViewModel
+import com.expense.expensetracking.common.util.Resource
+import com.expense.expensetracking.common.util.UiState
+import com.expense.expensetracking.data.repo.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(): BaseViewModel<LoginState, LoginIntent>(
+class LoginViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+): BaseViewModel<LoginState, LoginIntent>(
     initialState = LoginState()
 )  {
     override public fun handleIntent(intent: LoginIntent) {
@@ -36,6 +43,49 @@ class LoginViewModel @Inject constructor(): BaseViewModel<LoginState, LoginInten
                     copy(
                         isPasswordVisible = !isPasswordVisible
                     )
+                }
+            }
+            is LoginIntent.ClickLoginBtn -> {
+                login()
+            }
+        }
+    }
+
+    fun login() {
+        viewModelScope.launch {
+            val email = uiDataState.value.email
+            val password = uiDataState.value.password
+
+            authRepository.login(email, password).collect { resource ->
+                when (resource) {
+                    is Resource.Loading -> {
+                        handleDataState {
+                            copy(uiState = UiState.Loading)
+                        }
+                    }
+                    is Resource.Success -> {
+                        handleDataState {
+                            copy(
+                                uiState = UiState.Success,
+                                isError = false,
+                                errorMessage = ""
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        handleDataState {
+                            copy(
+                                uiState = UiState.Error(resource.message),
+                                isError = true,
+                                errorMessage = resource.message
+                            )
+                        }
+                    }
+                    is Resource.Idle -> {
+                        handleDataState {
+                            copy(uiState = UiState.Idle)
+                        }
+                    }
                 }
             }
         }

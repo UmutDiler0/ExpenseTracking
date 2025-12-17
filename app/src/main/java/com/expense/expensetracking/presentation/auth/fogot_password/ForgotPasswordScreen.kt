@@ -44,7 +44,7 @@ fun ForgotPasswordScreen(
         is UiState.Error -> {
 
         }
-        is UiState.Success<*> -> {}
+        is UiState.Success -> {}
         is UiState.Loading -> {
             LoadingScreen()
         }

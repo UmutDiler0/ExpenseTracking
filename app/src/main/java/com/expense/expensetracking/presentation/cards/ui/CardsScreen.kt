@@ -41,7 +41,7 @@ fun CardsScreen(
             LoadingScreen()
         }
         is UiState.Error -> {}
-        is UiState.Success<*> -> {}
+        is UiState.Success -> {}
     }
 
 }
