@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.expense.expensetracking.common.component.AppBtn
+import com.expense.expensetracking.common.component.LoadingScreen
+import com.expense.expensetracking.common.util.UiState
 import com.expense.expensetracking.presentation.auth.component.AuthEditText
 import com.expense.expensetracking.presentation.auth.component.AuthHeader
 import com.expense.expensetracking.presentation.auth.component.AuthRegisterLogin
@@ -40,9 +42,39 @@ fun LoginScreen(
     onNavigateForgotPassword: () -> Unit
 ) {
     val state by viewModel.uiDataState.collectAsState()
+
+
+    when(state.uiState){
+        is UiState.Idle -> {
+            LoginIdle(
+                viewModel,
+                state = state,
+                onNavigateRegisterScreen,
+                onNavigateHomeScreen
+            ) {
+                onNavigateForgotPassword()
+            }
+        }
+        is UiState.Error -> {}
+        is UiState.Success<*> -> {}
+        is UiState.Loading -> {
+            LoadingScreen()
+        }
+    }
+
+
+}
+
+@Composable
+fun LoginIdle(
+    viewModel: LoginViewModel,
+    state: LoginState,
+    onNavigateRegisterScreen: () -> Unit,
+    onNavigateHomeScreen: () -> Unit,
+    onNavigateForgotPassword: () -> Unit
+){
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()

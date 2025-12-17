@@ -34,12 +34,3 @@ fun LoadingScreen(
         )
     }
 }
-
-@Composable
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
-private fun a(){
-    LoadingScreen()
-}

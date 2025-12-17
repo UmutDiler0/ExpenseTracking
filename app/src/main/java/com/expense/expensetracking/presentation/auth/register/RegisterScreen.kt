@@ -20,6 +20,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.expense.expensetracking.common.component.AppBtn
+import com.expense.expensetracking.common.component.LoadingScreen
+import com.expense.expensetracking.common.util.UiState
 import com.expense.expensetracking.presentation.auth.component.AuthEditText
 import com.expense.expensetracking.presentation.auth.component.AuthHeader
 import com.expense.expensetracking.presentation.auth.component.AuthRegisterLogin
@@ -29,11 +31,41 @@ fun RegisterScreen(
     viewModel: RegisterViewModel = hiltViewModel(),
     onNavigateHomeScreen: () -> Unit,
     onNavigateLoginScreen: () -> Unit
-){
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
+) {
+
     val state by viewModel.uiDataState.collectAsState()
 
+    when (state.uiState) {
+        is UiState.Idle -> {
+            RegisterIdle(
+                viewModel,
+                state,
+                onNavigateHomeScreen
+            ) {
+                onNavigateLoginScreen()
+            }
+        }
+
+        is UiState.Loading -> {
+            LoadingScreen()
+        }
+
+        is UiState.Error -> {}
+        is UiState.Success<*> -> {}
+    }
+
+
+}
+
+@Composable
+fun RegisterIdle(
+    viewModel: RegisterViewModel,
+    state: RegisterState,
+    onNavigateHomeScreen: () -> Unit,
+    onNavigateLoginScreen: () -> Unit
+) {
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier = Modifier
             .fillMaxSize()
