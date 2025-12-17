@@ -25,9 +25,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.expense.expensetracking.common.component.AppBtn
 import com.expense.expensetracking.common.component.CustomTopAppBar
+import com.expense.expensetracking.common.component.LoadingScreen
+import com.expense.expensetracking.common.util.UiState
 import com.expense.expensetracking.presentation.home.component.CustomInputField
 import com.expense.expensetracking.presentation.home.component.SelectionRow
 import com.expense.expensetracking.presentation.home.ui.HomeIntent
+import com.expense.expensetracking.presentation.home.ui.HomeState
 import com.expense.expensetracking.presentation.home.ui.HomeViewModel
 import com.expense.expensetracking.ui.theme.SurfaceDark
 import com.expense.expensetracking.ui.theme.SurfaceLight
@@ -42,6 +45,33 @@ fun SpendBalanceScreen(
     onPopBackStack: () -> Unit
 ){
     val state by viewModel.uiDataState.collectAsState()
+
+
+    when(state.uiState){
+        is UiState.Idle -> {
+            SpendBalanceIdle(
+                viewModel,
+                state
+            ) {
+                onPopBackStack()
+            }
+        }
+        is UiState.Loading -> {
+            LoadingScreen()
+        }
+        is UiState.Error -> {}
+        is UiState.Success<*> -> {}
+    }
+
+
+}
+
+@Composable
+fun SpendBalanceIdle(
+    viewModel: HomeViewModel,
+    state: HomeState,
+    onPopBackStack: () -> Unit
+){
     val contentColor = if (isSystemInDarkTheme()) TextLight else TextDark
     val labelColor = if (isSystemInDarkTheme()) TextGrayDark else TextGrayLight
     Column(

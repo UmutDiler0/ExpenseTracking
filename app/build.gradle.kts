@@ -1,3 +1,6 @@
+import java.lang.module.ModuleFinder.compose
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -65,6 +68,16 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.0.0")
 
     implementation("androidx.compose.material:material-icons-extended:1.6.0")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+
+    // Firebase Authentication kütüphanesi
+    implementation("com.google.firebase:firebase-auth")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+
+    implementation("com.google.firebase:firebase-firestore")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

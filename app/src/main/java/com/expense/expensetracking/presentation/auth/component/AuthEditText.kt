@@ -115,9 +115,15 @@ fun AuthEditText(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
+
                 errorContainerColor = InputBg,
-                errorIndicatorColor = Color.Red,
+                errorIndicatorColor = Color.Transparent,
+
                 cursorColor = TextWhite,
+                errorCursorColor = TextWhite,
+                errorLabelColor = Color.Red,
+                errorLeadingIconColor = Color.Red,
+                errorTrailingIconColor = Color.Red
             ),
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier.fillMaxWidth(),

@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.expense.expensetracking.common.component.CustomTopAppBar
+import com.expense.expensetracking.common.component.LoadingScreen
+import com.expense.expensetracking.common.util.UiState
 import com.expense.expensetracking.domain.model.CardItem
 import com.expense.expensetracking.presentation.cards.component.CardScreenItem
 
@@ -25,6 +27,32 @@ fun CardsScreen(
 ){
     val state by viewModel.uiDataState.collectAsState()
 
+    when(state.uiState){
+        is UiState.Idle -> {
+            CardIdle(
+                viewModel,
+                state,
+                onNavigateCardDetail
+            ) {
+                onNavigateAddItem()
+            }
+        }
+        is UiState.Loading -> {
+            LoadingScreen()
+        }
+        is UiState.Error -> {}
+        is UiState.Success<*> -> {}
+    }
+
+}
+
+@Composable
+fun CardIdle(
+    viewModel: CardSharedViewModel,
+    state: SharedCardState,
+    onNavigateCardDetail: () -> Unit,
+    onNavigateAddItem: () -> Unit
+){
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
