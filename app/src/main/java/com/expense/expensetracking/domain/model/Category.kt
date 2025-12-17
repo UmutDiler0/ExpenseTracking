@@ -10,44 +10,48 @@ import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.expense.expensetracking.common.util.IconFactory
 
 data class Category(
     val categoryName: String,
-    val icon: ImageVector
+    val iconName: String
 ){
+    val icon: ImageVector
+        get() = IconFactory.getIcon(iconName)
+
     companion object {
         val categoryList = listOf(
             Category(
                 categoryName = "Market",
-                icon = Icons.Default.ShoppingCart
+                iconName = "shopping"
             ),
             Category(
                 categoryName = "Yemek",
-                icon = Icons.Default.Restaurant
+                iconName = "food"
             ),
             Category(
                 categoryName = "Ulaşım",
-                icon = Icons.Default.DirectionsBus
+                iconName = "transport"
             ),
             Category(
                 categoryName = "Kahve",
-                icon = Icons.Default.LocalCafe
+                iconName = "coffee"
             ),
             Category(
                 categoryName = "Eğlence",
-                icon = Icons.Default.Movie
+                iconName = "entertainment"
             ),
             Category(
                 categoryName = "Sağlık",
-                icon = Icons.Default.LocalHospital
+                iconName = "health"
             ),
             Category(
                 categoryName = "Faturalar",
-                icon = Icons.Default.Receipt
+                iconName = "bills"
             ),
             Category(
                 categoryName = "Giyim",
-                icon = Icons.Default.Checkroom
+                iconName = "clothing"
             )
         )
     }

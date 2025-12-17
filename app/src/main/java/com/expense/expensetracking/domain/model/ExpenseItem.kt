@@ -4,11 +4,15 @@ import android.graphics.drawable.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Image
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.expense.expensetracking.common.util.IconFactory
 
 data class ExpenseItem(
-    val icon: ImageVector = Icons.Rounded.Image,
+    val iconName: String = "others",
     val title: String = "",
-    val desc: String  ="",
+    val desc: String = "",
     val price: Int = 450,
     val isPriceUp: Boolean = false
-    )
+) {
+    val icon: ImageVector
+        get() = IconFactory.getIcon(iconName)
+}
