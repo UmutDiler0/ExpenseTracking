@@ -10,7 +10,7 @@ data class User(
 
     val password: String = "",
     val name: String = "",
-    val surname: String,
+    val surname: String = "",
     val totalBalance: Int = 0,
     val expenseList: List<ExpenseItem> = listOf(),
     val cardList: List<CardItem> = listOf(),

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.expense.expensetracking.common.component.CustomTopAppBar
+import com.expense.expensetracking.common.component.ErrorScreen
 import com.expense.expensetracking.common.component.LoadingScreen
 import com.expense.expensetracking.common.util.UiState
 import com.expense.expensetracking.presentation.home.component.AddOrDecBalanceBtn
@@ -47,7 +48,9 @@ fun HomeScreen(
         is UiState.Loading -> {
             LoadingScreen()
         }
-        is UiState.Error -> {}
+        is UiState.Error -> {
+            ErrorScreen()
+        }
         is UiState.Success -> {}
     }
 
@@ -71,7 +74,9 @@ fun HomeIdle(
             isBackBtnActive = false,
             isTrailingIconActive = true
         ){}
-        BalanceCard()
+        BalanceCard(
+            state.user.totalBalance
+        )
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -86,6 +91,8 @@ fun HomeIdle(
             }
         }
         Spacer(modifier = Modifier.height(32.dp))
-        ExpensesList()
+        ExpensesList(
+            state.user.expenseList
+        )
     }
 }

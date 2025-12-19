@@ -10,11 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.expense.expensetracking.common.util.tempList
+import com.expense.expensetracking.domain.model.ExpenseItem
 import com.expense.expensetracking.ui.theme.Manrope
 
 @Composable
 fun ExpensesList(
-
+    list: List<ExpenseItem>
 ){
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp)
@@ -26,7 +27,7 @@ fun ExpensesList(
                 fontWeight = FontWeight.SemiBold,
             )
         }
-        items(tempList){item ->
+        items(list){item ->
             ExpenseItem(item)
         }
     }

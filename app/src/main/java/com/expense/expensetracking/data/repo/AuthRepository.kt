@@ -1,6 +1,7 @@
 package com.expense.expensetracking.data.repo
 
 import com.expense.expensetracking.common.util.Resource
+import com.expense.expensetracking.data.local_repo.UserDao
 import com.expense.expensetracking.domain.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -12,11 +13,13 @@ import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
     private val auth: FirebaseAuth,
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val userDao: UserDao,
 ) {
 
     val currentUserId: String
         get() = auth.currentUser?.uid.orEmpty()
+    val currentUser = auth.currentUser
 
     fun login(email: String, pass: String): Flow<Resource<FirebaseUser>> = flow {
         emit(Resource.Loading)
@@ -63,6 +66,26 @@ class AuthRepository @Inject constructor(
             }
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "Kayıt sırasında hata oluştu"))
+        }
+    }
+
+    suspend fun syncUserToLocal() {
+        try {
+            val uid = auth.currentUser?.uid
+            if (uid != null) {
+                val snapshot = firestore.collection("users")
+                    .document(uid)
+                    .get()
+                    .await()
+
+                val user = snapshot.toObject(User::class.java)
+
+                if (user != null) {
+                    userDao.insertUser(user)
+                }
+            }
+        } catch (e: Exception) {
+            println("User sync error: ${e.message}")
         }
     }
 }

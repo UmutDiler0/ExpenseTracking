@@ -1,4 +1,6 @@
 package com.expense.expensetracking.data.repo
 
-class FirestoreRepo {
+import javax.inject.Inject
+
+class FirestoreRepo @Inject constructor() {
 }

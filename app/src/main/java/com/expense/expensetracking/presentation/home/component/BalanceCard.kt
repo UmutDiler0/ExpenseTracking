@@ -17,7 +17,7 @@ import com.expense.expensetracking.ui.theme.Manrope
 
 @Composable
 fun BalanceCard(
-
+    value: Int
 ){
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp),
@@ -36,7 +36,7 @@ fun BalanceCard(
                 fontSize = 12.sp
             )
             Text(
-                "1,250.75",
+                value.toString() + " ₺",
                 fontFamily = Manrope,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp
