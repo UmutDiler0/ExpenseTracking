@@ -23,7 +23,8 @@ class HomeViewModel @Inject constructor(
             val user = userDao.getUser() ?: User()
             handleDataState {
                 copy(
-                    user = user
+                    user = user,
+                    uiState = if(user.name == "") UiState.Error("") else UiState.Idle
                 )
             }
         }

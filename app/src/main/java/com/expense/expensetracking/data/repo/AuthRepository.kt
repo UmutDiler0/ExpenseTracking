@@ -26,6 +26,7 @@ class AuthRepository @Inject constructor(
         try {
             val result = auth.signInWithEmailAndPassword(email, pass).await()
             if (result.user != null) {
+                syncUserToLocal()
                 emit(Resource.Success(result.user!!))
             } else {
                 emit(Resource.Error("Kullanıcı bulunamadı."))
