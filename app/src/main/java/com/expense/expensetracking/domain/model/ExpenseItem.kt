@@ -5,13 +5,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Image
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.expense.expensetracking.common.util.IconFactory
+import com.google.firebase.Timestamp
 
 data class ExpenseItem(
     val iconName: String = "others",
     val title: String = "",
     val desc: String = "",
     val price: Int = 450,
-    val isPriceUp: Boolean = false
+    val isPriceUp: Boolean = false,
+    val spendDate: Timestamp = Timestamp.now()
 ) {
     val icon: ImageVector
         get() = IconFactory.getIcon(iconName)

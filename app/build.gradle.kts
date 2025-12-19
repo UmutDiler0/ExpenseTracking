@@ -1,5 +1,4 @@
 
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -65,6 +64,10 @@ dependencies {
 
     implementation("com.github.LottieFiles:dotlottie-android:0.5.0")
 
+    implementation("androidx.room:room-runtime:2.7.2")
+    ksp("androidx.room:room-compiler:2.7.2")
+    implementation("com.google.code.gson:gson:2.10.1")
+
     implementation("com.airbnb.android:lottie-compose:6.0.0")
 
     implementation("androidx.compose.material:material-icons-extended:1.6.0")
@@ -77,6 +80,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     implementation("com.google.firebase:firebase-firestore")
+
+    implementation("com.google.zxing:core:3.5.3")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

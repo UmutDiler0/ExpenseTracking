@@ -2,7 +2,6 @@ package com.expense.expensetracking.data.repo
 
 import com.expense.expensetracking.common.util.Resource
 import com.expense.expensetracking.domain.model.User
-import com.expense.expensetracking.domain.service.AuthRepoService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -49,9 +48,9 @@ class AuthRepository @Inject constructor(
                     "surname" to user.surname,
                     "expenseList" to user.expenseList,
                     "cardList" to user.cardList,
+                    "totalBalance" to user.totalBalance,
                     "createdAt" to com.google.firebase.Timestamp.now()
                 )
-
 
                 firestore.collection("users")
                     .document(firebaseUser.uid)
