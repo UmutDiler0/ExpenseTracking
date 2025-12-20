@@ -47,6 +47,27 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             }
+            is HomeIntent.SelectCard -> {
+                handleDataState {
+                    copy(
+                        selectedCardItem = intent.card
+                    )
+                }
+            }
+            is HomeIntent.SelectCategory -> {
+                handleDataState {
+                    copy(
+                        selectedCategory = intent.category
+                    )
+                }
+            }
+            is HomeIntent.SetMenu -> {
+                handleDataState {
+                    copy(
+                        currentMenuState = intent.menu
+                    )
+                }
+            }
         }
     }
 }

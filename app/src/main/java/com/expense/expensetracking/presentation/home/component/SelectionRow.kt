@@ -33,20 +33,22 @@ fun SelectionRow(
     subtitle: String? = null,
     backgroundColor: Color,
     contentColor: Color,
-    iconBgColor: Color
+    iconBgColor: Color,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(backgroundColor)
-            .clickable { /* Seçim Yap */ }
+            .clickable {
+
+            }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            // İkon Kutusu
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -61,7 +63,6 @@ fun SelectionRow(
                 )
             }
 
-            // Metinler
             Column {
                 Text(
                     text = title,
@@ -84,7 +85,6 @@ fun SelectionRow(
             }
         }
 
-        // Chevron Sağa
         Icon(
             imageVector = Icons.Default.ChevronRight,
             contentDescription = null,
