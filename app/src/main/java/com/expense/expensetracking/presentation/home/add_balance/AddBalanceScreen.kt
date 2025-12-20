@@ -114,7 +114,9 @@ fun AddBalanceIdle(
                 iconBgColor = if (isSystemInDarkTheme()) Color.White.copy(0.1f) else Color(
                     0xFFD1D5DB
                 )
-            )
+            ){
+
+            }
         }
         AppBtn(
             "Kaydet"

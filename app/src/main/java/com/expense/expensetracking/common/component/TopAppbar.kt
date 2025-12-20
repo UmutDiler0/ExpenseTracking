@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.expense.expensetracking.ui.theme.Manrope
 
 @Composable
@@ -50,7 +51,8 @@ fun CustomTopAppBar(
         Text(
             header,
             fontFamily = Manrope,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 22.sp
         )
         if(isTrailingIconActive){
             Icon(

@@ -1,6 +1,7 @@
 package com.expense.expensetracking.presentation.home.spend_balance
 
 import android.R.attr.textColor
+import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,7 +29,11 @@ import com.expense.expensetracking.common.component.AppBtn
 import com.expense.expensetracking.common.component.CustomTopAppBar
 import com.expense.expensetracking.common.component.LoadingScreen
 import com.expense.expensetracking.common.util.UiState
+import com.expense.expensetracking.domain.model.CardItem
+import com.expense.expensetracking.domain.model.Category
 import com.expense.expensetracking.presentation.home.component.CustomInputField
+import com.expense.expensetracking.presentation.home.component.Menu
+import com.expense.expensetracking.presentation.home.component.MenuScreen
 import com.expense.expensetracking.presentation.home.component.SelectionRow
 import com.expense.expensetracking.presentation.home.ui.HomeIntent
 import com.expense.expensetracking.presentation.home.ui.HomeState
@@ -49,12 +55,21 @@ fun SpendBalanceScreen(
 
     when(state.uiState){
         is UiState.Idle -> {
-            SpendBalanceIdle(
-                viewModel,
-                state
-            ) {
-                onPopBackStack()
+            if(state.currentMenuState != Menu.IDLE){
+                MenuScreen(
+                    state = state,
+                    viewModel = viewModel,
+                    menuType = state.currentMenuState
+                )
+            }else{
+                SpendBalanceIdle(
+                    viewModel,
+                    state
+                ) {
+                    onPopBackStack()
+                }
             }
+
         }
         is UiState.Loading -> {
             LoadingScreen()
@@ -74,6 +89,7 @@ fun SpendBalanceIdle(
 ){
     val contentColor = if (isSystemInDarkTheme()) TextLight else TextDark
     val labelColor = if (isSystemInDarkTheme()) TextGrayDark else TextGrayLight
+    val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -112,14 +128,16 @@ fun SpendBalanceIdle(
             )
 
             SelectionRow(
-                icon = Icons.AutoMirrored.Filled.Label,
-                title = "Kategori Seç",
+                icon = if(state.selectedCategory == Category("","")) Icons.AutoMirrored.Filled.Label else state.selectedCategory.icon,
+                title = if(state.selectedCategory == Category("","")) "Kategori Seç" else state.selectedCategory.categoryName,
                 backgroundColor = if (isSystemInDarkTheme()) SurfaceDark else SurfaceLight,
                 contentColor = contentColor,
                 iconBgColor = if (isSystemInDarkTheme()) Color.White.copy(0.1f) else Color(
                     0xFFD1D5DB
                 )
-            ){}
+            ){
+                viewModel.handleIntent(HomeIntent.SetMenu(Menu.CATEGORY))
+            }
         }
 
         Column {
@@ -135,14 +153,20 @@ fun SpendBalanceIdle(
 
             SelectionRow(
                 icon = Icons.Default.CreditCard,
-                title = "Mastercard",
-                subtitle = "**** 1234",
+                title = if(state.selectedCardItem == CardItem()) "Kart Seç" else state.selectedCardItem.name,
+                subtitle = null,
                 backgroundColor = if (isSystemInDarkTheme()) SurfaceDark else SurfaceLight,
                 contentColor = contentColor,
                 iconBgColor = if (isSystemInDarkTheme()) Color.White.copy(0.1f) else Color(
                     0xFFD1D5DB
                 )
-            ){}
+            ){
+                if(state.user.cardList.isNotEmpty()){
+                    viewModel.handleIntent(HomeIntent.SetMenu(Menu.CARDS))
+                }else{
+                    Toast.makeText(context,"Herhngi bir kart bulunamadı önce kart ekleyiniz", Toast.LENGTH_LONG).show()
+                }
+            }
         }
         AppBtn(
             "Kaydet"

@@ -42,7 +42,7 @@ fun SelectionRow(
             .clip(RoundedCornerShape(12.dp))
             .background(backgroundColor)
             .clickable {
-
+                onClick()
             }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
