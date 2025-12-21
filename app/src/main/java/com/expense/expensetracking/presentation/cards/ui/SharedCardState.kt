@@ -12,5 +12,6 @@ data class SharedCardState(
     val currentCard: CardItem = CardItem(),
     val addCardName: String = "",
     val addCardBalance: String = "",
-    val addBalance: String = ""
+    val addBalance: String = "",
+    val currentCardStage: CardStage = CardStage.IDLE
 )

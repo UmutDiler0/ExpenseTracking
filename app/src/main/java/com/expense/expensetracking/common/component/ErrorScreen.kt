@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,10 +26,11 @@ fun ErrorScreen(
         verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
+        Icon(
             painter = painterResource(R.drawable.ic_error),
             contentDescription = "",
             modifier = Modifier.size(200.dp),
+            tint = Color.Red
         )
         Text("Bir şeyler ters gitti", color = Color.White, fontFamily = Manrope, fontWeight = FontWeight.SemiBold)
     }

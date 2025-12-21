@@ -49,6 +49,20 @@ class CardSharedViewModel @Inject constructor(
                     )
                 }
             }
+            is SharedCardIntent.SetCurrentCard -> {
+                handleDataState {
+                    copy(
+                        currentCard = intent.card,
+                    )
+                }
+            }
+            is SharedCardIntent.SetCurrentCardStage -> {
+                handleDataState {
+                    copy(
+                        currentCardStage = intent.stage
+                    )
+                }
+            }
         }
     }
 

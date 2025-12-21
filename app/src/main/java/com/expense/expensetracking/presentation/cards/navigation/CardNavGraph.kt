@@ -19,18 +19,8 @@ fun NavGraphBuilder.cardNavGraph(
 
     navigation<CardGraph>(startDestination = Cards){
         composable<Cards> {
-            CardsScreen(
-                onNavigateCardDetail = {
-                    bottomNavController.navigate(CardDetail)
-                }
-            ){
+            CardsScreen{
                 bottomNavController.navigate(AddCardScreen)
-            }
-        }
-
-        composable<CardDetail> {
-            CardDetailScreen {
-                navController.popBackStack()
             }
         }
 
