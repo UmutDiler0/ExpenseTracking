@@ -126,7 +126,7 @@ fun OnBoardingScreen(
                 if (pagerState.currentPage < pages.size - 1) {
                     TextButton(onClick ={
                         viewModel.completeOnboarding()
-                        onNavigateHomeScreen
+                        onNavigateHomeScreen()
                     } ) {
                         Text(
                             "Atla",

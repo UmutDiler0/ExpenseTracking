@@ -32,14 +32,17 @@ fun SplashScreen(
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+
     LaunchedEffect(key1 = Unit) {
         delay(3000L)
-
+        val onboardingComplete = state.isOnBoardingCompleted
+        val rememberMe = state.isRememberMe
+        val credentialsValid = state.email.isNotBlank() && state.password.isNotBlank()
         when {
-            !state.isOnBoardingCompleted -> {
+            !onboardingComplete -> {
                 onNavigateOnboardingScreen()
             }
-            state.isRememberMe && state.email.isNotEmpty() && state.password.isNotEmpty() -> {
+            rememberMe && credentialsValid -> {
                 onNavigateHomeScreen()
             }
             else -> {

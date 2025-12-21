@@ -1,9 +1,11 @@
 package com.expense.expensetracking.presentation.auth.login
 
+import androidx.datastore.dataStore
 import androidx.lifecycle.viewModelScope
 import com.expense.expensetracking.BaseViewModel
 import com.expense.expensetracking.common.util.Resource
 import com.expense.expensetracking.common.util.UiState
+import com.expense.expensetracking.data.manager.DataStoreManager
 import com.expense.expensetracking.data.repo.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -11,6 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
+    private val dataStoreManager: DataStoreManager,
     private val authRepository: AuthRepository
 ): BaseViewModel<LoginState, LoginIntent>(
     initialState = LoginState()
@@ -48,6 +51,17 @@ class LoginViewModel @Inject constructor(
             is LoginIntent.ClickLoginBtn -> {
                 login()
             }
+
+        }
+    }
+
+    private fun saveUserDatastore(){
+        viewModelScope.launch {
+            if(uiDataState.value.isChecked){
+                dataStoreManager.saveRememberMe(true)
+                dataStoreManager.saveEmail(uiDataState.value.email)
+                dataStoreManager.savePassword(uiDataState.value.password)
+            }
         }
     }
 
@@ -64,6 +78,7 @@ class LoginViewModel @Inject constructor(
                         }
                     }
                     is Resource.Success -> {
+                        saveUserDatastore()
                         handleDataState {
                             copy(
                                 uiState = UiState.Success,

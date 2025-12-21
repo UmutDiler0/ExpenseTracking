@@ -35,14 +35,14 @@ fun RootNavController(
                     }
                 },
                 onNavigateLoginScreen = {
-                    navController.navigate(MainGraph){
+                    navController.navigate(Auth){
                         popUpTo(Splash) {
                             inclusive = true
                         }
                     }
                 }
             ) {
-                navController.navigate(Auth){
+                navController.navigate(MainGraph){
                     popUpTo(Splash) {
                         inclusive = true
                     }
