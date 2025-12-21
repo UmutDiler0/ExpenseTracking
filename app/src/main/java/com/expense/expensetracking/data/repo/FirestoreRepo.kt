@@ -31,12 +31,22 @@ class FirestoreRepo @Inject constructor(
         }
 
     override suspend fun addCard(cardItem: CardItem) {
-        userRef?.update("cardList", FieldValue.arrayUnion(cardItem))?.await()
+        userRef?.update(
+            "cardList", FieldValue.arrayUnion(cardItem),
+            "totalBalance", FieldValue.increment(cardItem.balance.toLong())
+        )?.await()
 
         val localUser = userDao.getUser()
         localUser?.let {
             val updatedList = it.cardList.toMutableList().apply { add(cardItem) }
-            userDao.updateCardList(updatedList)
+            val updatedTotalBalance = it.totalBalance + cardItem.balance
+
+            userDao.updateUser(
+                it.copy(
+                    cardList = updatedList,
+                    totalBalance = updatedTotalBalance
+                )
+            )
         }
     }
 

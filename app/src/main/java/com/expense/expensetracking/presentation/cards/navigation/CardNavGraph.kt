@@ -35,7 +35,13 @@ fun NavGraphBuilder.cardNavGraph(
         }
 
         composable<AddCardScreen> {
-            AddCardScreen {  }
+            AddCardScreen {
+                bottomNavController.navigate(Cards){
+                    popUpTo(AddCardScreen) {
+                        inclusive = true
+                    }
+                }
+            }
         }
     }
 }

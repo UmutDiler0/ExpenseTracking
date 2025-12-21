@@ -8,6 +8,7 @@ import androidx.room.Update
 import com.expense.expensetracking.domain.model.CardItem
 import com.expense.expensetracking.domain.model.ExpenseItem
 import com.expense.expensetracking.domain.model.User
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -20,6 +21,9 @@ interface UserDao {
 
     @Query("DELETE FROM users")
     suspend fun deleteUser()
+
+    @Query("SELECT * FROM users LIMIT 1")
+    fun observeUser(): Flow<User?>
 
     @Update
     suspend fun updateUser(user: User)

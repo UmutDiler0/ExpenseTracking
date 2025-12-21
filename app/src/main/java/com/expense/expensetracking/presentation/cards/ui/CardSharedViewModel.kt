@@ -1,15 +1,32 @@
 package com.expense.expensetracking.presentation.cards.ui
 
+import androidx.compose.material3.Card
+import androidx.lifecycle.viewModelScope
 import com.expense.expensetracking.BaseViewModel
+import com.expense.expensetracking.common.util.UiState
+import com.expense.expensetracking.data.local_repo.UserDao
+import com.expense.expensetracking.data.repo.FirestoreRepo
+import com.expense.expensetracking.domain.model.CardItem
+import com.expense.expensetracking.domain.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CardSharedViewModel @Inject constructor(): BaseViewModel<SharedCardState, SharedCardIntent>(
+class CardSharedViewModel @Inject constructor(
+    private val userDao: UserDao,
+    private val firestoreRepo: FirestoreRepo,
+): BaseViewModel<SharedCardState, SharedCardIntent>(
     initialState = SharedCardState()
 ) {
 
-    override fun handleIntent(intent: SharedCardIntent) {
+    init {
+        observeUserFromDB()
+    }
+
+    override public fun handleIntent(intent: SharedCardIntent) {
         when(intent){
             is SharedCardIntent.SetCardName -> {
                 handleDataState {
@@ -31,6 +48,59 @@ class CardSharedViewModel @Inject constructor(): BaseViewModel<SharedCardState, 
                         addBalance = intent.value
                     )
                 }
+            }
+        }
+    }
+
+    fun addCardToDB() {
+        viewModelScope.launch {
+            val name = uiDataState.value.addCardName
+            val balance = uiDataState.value.addCardBalance
+
+            if (name.isNotEmpty() && balance.isNotEmpty()) {
+                handleDataState { copy(uiState = UiState.Loading) }
+
+                val newCard = CardItem(
+                    name = name,
+                    balance = balance.toInt()
+                )
+
+                firestoreRepo.addCard(newCard)
+
+                handleDataState {
+                    copy(
+                        uiState = UiState.Idle,
+                        addCardName = "",
+                        addCardBalance = ""
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeUserFromDB() {
+        userDao.observeUser()
+            .onEach { user ->
+                val currentUser = user ?: User(surname = "")
+                handleDataState {
+                    copy(
+                        user = currentUser,
+                        cardList = currentUser.cardList,
+                        uiState = UiState.Idle
+                    )
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun getUserFromDB(){
+        viewModelScope.launch {
+            val user = userDao.getUser() ?: User()
+            handleDataState {
+                copy(
+                    user = user,
+                    uiState = UiState.Idle,
+                    cardList = user.cardList
+                )
             }
         }
     }
