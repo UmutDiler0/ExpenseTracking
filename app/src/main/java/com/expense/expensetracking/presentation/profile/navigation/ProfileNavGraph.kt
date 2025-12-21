@@ -11,7 +11,7 @@ import com.expense.expensetracking.presentation.profile.ui.ProfileScreen
 fun NavGraphBuilder.profileNavGraph(rootNnavController: NavHostController){
     navigation<ProfileGraph>(startDestination = Profile){
         composable<Profile>{
-            ProfileScreen()
+            ProfileScreen(){}
         }
     }
 }
