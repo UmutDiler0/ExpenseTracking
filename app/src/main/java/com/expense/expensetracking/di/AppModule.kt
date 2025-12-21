@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.expense.expensetracking.AppDataBase
 import com.expense.expensetracking.data.local_repo.UserDao
+import com.expense.expensetracking.data.manager.DataStoreManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -48,5 +49,11 @@ object AppModule {
     @Singleton
     fun provideUserDao(db: AppDataBase): UserDao {
         return db.userDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStoreManager(@ApplicationContext context: Context): DataStoreManager {
+        return DataStoreManager(context)
     }
 }

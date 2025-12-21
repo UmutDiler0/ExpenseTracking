@@ -61,6 +61,8 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
 
     implementation("androidx.datastore:datastore-preferences:1.1.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     implementation("com.github.LottieFiles:dotlottie-android:0.5.0")
 

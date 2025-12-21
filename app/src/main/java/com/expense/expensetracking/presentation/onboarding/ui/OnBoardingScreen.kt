@@ -1,5 +1,6 @@
 package com.expense.expensetracking.presentation.onboarding.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,14 +33,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.expense.expensetracking.R
 import com.expense.expensetracking.presentation.onboarding.component.PagerItem
 import com.expense.expensetracking.ui.theme.PrimaryGreen
 import com.lottiefiles.dotlottie.core.util.DotLottieSource
 import kotlinx.coroutines.launch
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun OnBoardingScreen(
+    viewModel: OnBoardingViewModel = hiltViewModel(),
     onNavigateHomeScreen: () -> Unit
 ){
     val scope = rememberCoroutineScope() // Butonla sayfa geçişi için
@@ -120,7 +124,10 @@ fun OnBoardingScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (pagerState.currentPage < pages.size - 1) {
-                    TextButton(onClick = onNavigateHomeScreen) {
+                    TextButton(onClick ={
+                        viewModel.completeOnboarding()
+                        onNavigateHomeScreen
+                    } ) {
                         Text(
                             "Atla",
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
@@ -139,7 +146,10 @@ fun OnBoardingScreen(
                     }
                 } else {
                     Button(
-                        onClick = onNavigateHomeScreen,
+                        onClick = {
+                            viewModel.completeOnboarding()
+                            onNavigateHomeScreen()
+                                  },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
                     ) {

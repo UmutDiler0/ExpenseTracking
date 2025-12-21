@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.expense.expensetracking.common.util.Auth
+import com.expense.expensetracking.common.util.Home
 import com.expense.expensetracking.common.util.MainGraph
 import com.expense.expensetracking.common.util.OnBoarding
 import com.expense.expensetracking.common.util.Register
@@ -33,8 +34,20 @@ fun RootNavController(
                         }
                     }
                 },
-                onNavigateLoginScreen = {}
-            ) { }
+                onNavigateLoginScreen = {
+                    navController.navigate(MainGraph){
+                        popUpTo(Splash) {
+                            inclusive = true
+                        }
+                    }
+                }
+            ) {
+                navController.navigate(Auth){
+                    popUpTo(Splash) {
+                        inclusive = true
+                    }
+                }
+            }
         }
         composable<OnBoarding>{
             OnBoardingScreen {
