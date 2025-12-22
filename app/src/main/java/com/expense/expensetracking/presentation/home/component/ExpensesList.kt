@@ -43,6 +43,7 @@ fun ExpensesList(
                     "Son Harcamalar",
                     fontFamily = Manrope,
                     fontWeight = FontWeight.SemiBold,
+
                 )
             }
             items(list){item ->

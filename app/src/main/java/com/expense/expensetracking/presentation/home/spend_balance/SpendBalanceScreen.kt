@@ -14,6 +14,7 @@ import androidx.compose.material.icons.rounded.Carpenter
 import androidx.compose.material3.ListItemDefaults.contentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -52,6 +53,11 @@ fun SpendBalanceScreen(
 ){
     val state by viewModel.uiDataState.collectAsState()
 
+    LaunchedEffect(state.uiState) {
+        if(state.uiState == UiState.Success){
+            onPopBackStack()
+        }
+    }
 
     when(state.uiState){
         is UiState.Idle -> {
@@ -78,9 +84,7 @@ fun SpendBalanceScreen(
         is UiState.Success -> {}
     }
 
-
 }
-
 @Composable
 fun SpendBalanceIdle(
     viewModel: HomeViewModel,
@@ -171,7 +175,8 @@ fun SpendBalanceIdle(
         AppBtn(
             "Kaydet"
         ){
-            onPopBackStack()
+            viewModel.addSpend()
+
         }
     }
 }

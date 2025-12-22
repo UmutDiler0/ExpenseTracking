@@ -5,31 +5,42 @@ import com.expense.expensetracking.BaseViewModel
 import com.expense.expensetracking.common.util.UiState
 import com.expense.expensetracking.data.local_repo.UserDao
 import com.expense.expensetracking.data.repo.AuthRepository
+import com.expense.expensetracking.data.repo.FirestoreRepo
+import com.expense.expensetracking.domain.model.ExpenseItem
 import com.expense.expensetracking.domain.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val authRepository: AuthRepository,
+    private val firestoreRepo: FirestoreRepo,
     private val userDao: UserDao
 ): BaseViewModel<HomeState, HomeIntent>(
     initialState = HomeState()
 ) {
 
     init {
-        viewModelScope.launch {
-            val user = userDao.getUser() ?: User()
-            handleDataState {
-                copy(
-                    user = user,
-                    uiState = if(user.name == "") UiState.Error("") else UiState.Idle
-                )
+        userDao.observeUser()
+            .onEach { user ->
+                user?.let {
+                    handleDataState {
+                        copy(
+                            user = uiDataState.value.user.copy(
+                                expenseList = it.expenseList,
+                                totalBalance = it.totalBalance,
+                                cardList = it.cardList
+                            ),
+                            uiState = UiState.Idle
+                        )
+                    }
+                }
             }
-        }
+            .launchIn(viewModelScope)
     }
-
 
     override public fun handleIntent(intent: HomeIntent) {
         when(intent){
@@ -68,6 +79,45 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun addSpend(){
+        viewModelScope.launch {
+            if(uiDataState.value.selectedCardItem.name != ""){
+                handleDataState {
+                    copy(
+                        uiState = UiState.Loading
+                    )
+                }
+                firestoreRepo.addSpend(
+                    ExpenseItem(
+                        title = uiDataState.value.selectedCategory.categoryName,
+                        price = uiDataState.value.spendBalance.toInt(),
+                        isPriceUp = false,
+                        spendOrAddCard = uiDataState.value.selectedCardItem
+                    )
+                )
+                handleDataState {
+                    copy(
+                        uiState = UiState.Success
+                    )
+                }
+            }
+
+        }
+    }
+
+    fun addBalance(){
+        viewModelScope.launch {
+            firestoreRepo.addBalance(
+                ExpenseItem(
+                    title = "Gelir",
+                    price = uiDataState.value.addBalance.toInt(),
+                    isPriceUp = true,
+                    spendOrAddCard = uiDataState.value.selectedCardItem
+                )
+            )
         }
     }
 }

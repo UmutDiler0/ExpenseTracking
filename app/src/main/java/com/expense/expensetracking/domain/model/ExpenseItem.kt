@@ -13,6 +13,7 @@ data class ExpenseItem(
     val desc: String = "",
     val price: Int = 450,
     val isPriceUp: Boolean = false,
+    val spendOrAddCard: CardItem = CardItem(),
     val spendDate: Timestamp = Timestamp.now()
 ) {
     val icon: ImageVector

@@ -1,7 +1,9 @@
 package com.expense.expensetracking.data.repo
 
+import android.util.Log
 import com.expense.expensetracking.common.util.Resource
 import com.expense.expensetracking.data.local_repo.UserDao
+import com.expense.expensetracking.data.manager.DataStoreManager
 import com.expense.expensetracking.domain.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -15,6 +17,7 @@ class AuthRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
     private val userDao: UserDao,
+    private val dataStoreManager: DataStoreManager,
 ) {
 
     val currentUserId: String
@@ -87,6 +90,16 @@ class AuthRepository @Inject constructor(
             }
         } catch (e: Exception) {
             println("User sync error: ${e.message}")
+        }
+    }
+
+    suspend fun logout() {
+        try {
+            auth.signOut()
+            userDao.deleteUser()
+            dataStoreManager.clearAuthData()
+        } catch (e: Exception) {
+            Log.e("AuthRepository", e.message ?: "Logout Error")
         }
     }
 }

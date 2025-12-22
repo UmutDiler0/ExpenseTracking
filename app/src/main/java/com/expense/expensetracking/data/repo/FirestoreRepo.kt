@@ -1,5 +1,6 @@
 package com.expense.expensetracking.data.repo
 
+import android.util.Log
 import androidx.compose.animation.core.snap
 import com.expense.expensetracking.common.util.Resource
 import com.expense.expensetracking.data.local_repo.UserDao
@@ -66,24 +67,54 @@ class FirestoreRepo @Inject constructor(
     }
 
     override suspend fun addSpend(expenseItem: ExpenseItem) {
-        firestore.runTransaction { transaction ->
-            val snapshot = userRef?.let { transaction.get(it) }
-            val currentBalance = snapshot?.getLong("totalBalance") ?: 0L
-            val newBalance = (currentBalance - expenseItem.price).toInt()
+        val tag = "FirestoreRepo"
+        userRef?.let { ref ->
+            try {
+                Log.e(tag, "Transaction başlatılıyor. Referans: ${ref.path}")
 
-            userRef?.let {
-                transaction.update(it, "totalBalance", newBalance)
-                transaction.update(it, "expenseList", FieldValue.arrayUnion(expenseItem))
+                val finalBalance = firestore.runTransaction { transaction ->
+                    val snapshot = transaction.get(ref)
+                    if (!snapshot.exists()) {
+                        Log.e(tag, "Hata: Firestore dökümanı mevcut değil!")
+                        throw Exception("Döküman bulunamadı")
+                    }
+
+                    val currentBalance = snapshot.getLong("totalBalance") ?: 0L
+                    val newBalance = currentBalance - expenseItem.price
+
+                    Log.e(tag, "Firestore Mevcut Bakiye: $currentBalance, Hesaplanan Yeni Bakiye: $newBalance")
+
+                    transaction.update(ref, "totalBalance", newBalance)
+                    transaction.update(ref, "expenseList", FieldValue.arrayUnion(expenseItem))
+
+                    newBalance
+                }.await()
+
+                Log.e(tag, "Firestore işlemi başarılı. Yeni Bakiye: $finalBalance")
+
+                val localUser = userDao.getUser()
+                if (localUser != null) {
+                    Log.e(tag, "Room: Yerel kullanıcı bulundu. Liste güncelleniyor...")
+                    val updatedList = localUser.expenseList.toMutableList().apply {
+                        add(expenseItem)
+                    }
+
+                    userDao.updateUser(
+                        localUser.copy(
+                            expenseList = updatedList,
+                            totalBalance = finalBalance.toInt()
+                        )
+                    )
+                    Log.e(tag, "Room: Kullanıcı ve harcama listesi başarıyla güncellendi.")
+                } else {
+                    Log.e(tag, "Hata: Room üzerinde yerel kullanıcı bulunamadı (null)!")
+                }
+
+            } catch (e: Exception) {
+                Log.e(tag, "İşlem sırasında kritik hata: ${e.message}")
+                e.printStackTrace()
             }
-            newBalance
-        }.await().also { newBalance ->
-            val localUser = userDao.getUser()
-            localUser?.let {
-                val updatedList = it.expenseList.toMutableList().apply { add(expenseItem) }
-                userDao.updateExpenseList(updatedList)
-                userDao.updateTotalBalance(newBalance.toInt())
-            }
-        }
+        } ?: Log.e(tag, "Hata: userRef null! Kullanıcı oturumu kapalı olabilir.")
     }
 
     override suspend fun addBalance(expenseItem: ExpenseItem) {

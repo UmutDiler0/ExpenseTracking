@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.expense.expensetracking.common.util.formatTimestamp
 import com.expense.expensetracking.domain.model.ExpenseItem
 import com.expense.expensetracking.ui.theme.Manrope
 import com.expense.expensetracking.ui.theme.PrimaryGreen
@@ -26,10 +28,10 @@ import com.expense.expensetracking.ui.theme.TextBlack
 fun ExpenseItem(
     item: ExpenseItem
 ){
+     val date = formatTimestamp(item.spendDate)
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-
     ) {
         Box(
             modifier = Modifier.background(
@@ -46,14 +48,15 @@ fun ExpenseItem(
             )
         }
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(start = 16.dp)
         ) {
             Text(
                 item.title,
                 fontFamily = Manrope,
             )
             Text(
-                item.desc,
+                date,
                 fontFamily = Manrope,
                 fontWeight = FontWeight.Thin
             )

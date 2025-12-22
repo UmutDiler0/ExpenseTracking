@@ -119,7 +119,7 @@ fun MainNavGraph(
         ) {
             homeNavGraph(rootNavController, bottomNavController)
             cardNavGraph(rootNavController,bottomNavController)
-            profileNavGraph(rootNavController)
+            profileNavGraph(rootNavController, bottomNavController)
             reportNavGraph(rootNavController)
         }
     }

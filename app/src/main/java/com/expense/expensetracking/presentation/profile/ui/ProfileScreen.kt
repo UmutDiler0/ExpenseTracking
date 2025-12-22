@@ -30,6 +30,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -57,8 +58,10 @@ import com.expense.expensetracking.ui.theme.TextGray
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     onNavigateSettingScreen: () -> Unit,
+    onNavigateHomeScreen: () -> Unit,
 ) {
     val state by viewModel.uiDataState.collectAsState()
+
 
     when (state.uiState) {
         is UiState.Idle -> {
@@ -72,7 +75,9 @@ fun ProfileScreen(
             LoadingScreen()
         }
 
-        is UiState.Success -> {}
+        is UiState.Success -> {
+            onNavigateHomeScreen()
+        }
         is UiState.Error -> {
             ErrorScreen()
         }
@@ -211,7 +216,11 @@ fun ProfileIdleScreen(
                         "Çıkış Yap",
                         color = Color(0xFFef4444),
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.clickable{
+                            viewModel.logout()
+
+                        }
                     )
                 }
             }
