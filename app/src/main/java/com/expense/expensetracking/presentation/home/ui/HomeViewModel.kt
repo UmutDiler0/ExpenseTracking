@@ -7,7 +7,6 @@ import com.expense.expensetracking.data.local_repo.UserDao
 import com.expense.expensetracking.data.repo.AuthRepository
 import com.expense.expensetracking.data.repo.FirestoreRepo
 import com.expense.expensetracking.domain.model.ExpenseItem
-import com.expense.expensetracking.domain.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -100,7 +99,8 @@ class HomeViewModel @Inject constructor(
                     ExpenseItem(
                         title = currentUiData.selectedCategory.categoryName,
                         price = spendAmount,
-                        isPriceUp = false,
+                        priceUp = false,
+                        iconName = currentUiData.selectedCategory.iconName,
                         spendOrAddCard = selectedItem
                     )
                 )
@@ -121,7 +121,7 @@ class HomeViewModel @Inject constructor(
                     ExpenseItem(
                         title = "Gelir",
                         price = currentUiData.addBalance.toInt(),
-                        isPriceUp = true,
+                        priceUp = true,
                         spendOrAddCard = currentUiData.selectedCardItem
                     )
                 )

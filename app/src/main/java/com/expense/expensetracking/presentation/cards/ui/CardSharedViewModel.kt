@@ -1,5 +1,6 @@
 package com.expense.expensetracking.presentation.cards.ui
 
+import android.util.Log
 import androidx.compose.material3.Card
 import androidx.lifecycle.viewModelScope
 import com.expense.expensetracking.BaseViewModel
@@ -70,8 +71,17 @@ class CardSharedViewModel @Inject constructor(
         viewModelScope.launch {
             val name = uiDataState.value.addCardName
             val balance = uiDataState.value.addCardBalance
+            val currentCards = uiDataState.value.user.cardList
 
             if (name.isNotEmpty() && balance.isNotEmpty()) {
+
+                val isCardExist = currentCards.any { it.name.equals(name, ignoreCase = true) }
+
+                if (isCardExist) {
+                    Log.e("ViewModel", "Bu isimde bir kart zaten mevcut!")
+                    return@launch
+                }
+
                 handleDataState { copy(uiState = UiState.Loading) }
 
                 val newCard = CardItem(

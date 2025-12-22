@@ -1,7 +1,6 @@
 package com.expense.expensetracking.presentation.home.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.expense.expensetracking.common.util.IconFactory
 import com.expense.expensetracking.common.util.formatTimestamp
+
 import com.expense.expensetracking.domain.model.ExpenseItem
 import com.expense.expensetracking.ui.theme.Manrope
 import com.expense.expensetracking.ui.theme.PrimaryGreen
@@ -29,6 +30,7 @@ fun ExpenseItem(
     item: ExpenseItem
 ){
      val date = formatTimestamp(item.spendDate)
+    item.iconName
     Row(
         modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -42,9 +44,9 @@ fun ExpenseItem(
             contentAlignment = Alignment.Center
         ){
             Icon(
-                imageVector = item.icon,
+                imageVector = IconFactory.getIcon(item.iconName),
                 contentDescription = "",
-                tint = if(item.isPriceUp) PrimaryGreen else Color.White
+                tint = if(item.priceUp) PrimaryGreen else Color.White
             )
         }
         Column(
@@ -63,7 +65,7 @@ fun ExpenseItem(
         }
         Box(modifier = Modifier.weight(1f))
         Text(
-            if(item.isPriceUp) "+" + item.price.toString() else "-" + item.price.toString(),
+            if(item.priceUp) "+" + item.price.toString() else "-" + item.price.toString(),
 
         )
     }

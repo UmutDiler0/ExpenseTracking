@@ -42,12 +42,10 @@ class AuthRepository @Inject constructor(
     fun register(user: User): Flow<Resource<FirebaseUser>> = flow {
         emit(Resource.Loading)
         try {
-
             val authResult = auth.createUserWithEmailAndPassword(user.email, user.password).await()
             val firebaseUser = authResult.user
 
             if (firebaseUser != null) {
-
                 val userMap = hashMapOf(
                     "uid" to firebaseUser.uid,
                     "email" to user.email,
@@ -63,6 +61,14 @@ class AuthRepository @Inject constructor(
                     .document(firebaseUser.uid)
                     .set(userMap)
                     .await()
+
+                userDao.insertUser(
+                    user.copy(
+                        email = user.email,
+                        name = user.name,
+                        surname = user.surname
+                    )
+                )
 
                 emit(Resource.Success(firebaseUser))
             } else {

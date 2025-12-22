@@ -152,7 +152,7 @@ class FirestoreRepo @Inject constructor(
                         user.copy(
                             expenseList = updatedExpenseList,
                             totalBalance = updatedData.first.toInt(),
-                            cardList = updatedData.second
+                            cardList = updatedData.second,
                         )
                     )
                 }
