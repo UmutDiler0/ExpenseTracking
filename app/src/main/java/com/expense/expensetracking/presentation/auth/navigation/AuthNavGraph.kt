@@ -13,7 +13,7 @@ import com.expense.expensetracking.presentation.auth.fogot_password.ForgotPasswo
 import com.expense.expensetracking.presentation.auth.login.LoginScreen
 import com.expense.expensetracking.presentation.auth.register.RegisterScreen
 
-fun NavGraphBuilder.authNavGraph(navController: NavHostController){
+fun NavGraphBuilder. authNavGraph(navController: NavHostController){
 
     navigation<Auth>(startDestination = Login){
         composable<Login> {
