@@ -82,42 +82,57 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun addSpend(){
+    fun addSpend() {
         viewModelScope.launch {
-            if(uiDataState.value.selectedCardItem.name != ""){
-                handleDataState {
-                    copy(
-                        uiState = UiState.Loading
-                    )
+            val currentUiData = uiDataState.value
+            val selectedItem = currentUiData.selectedCardItem
+            val spendAmount = currentUiData.spendBalance.toIntOrNull() ?: 0
+
+            if (selectedItem.name.isNotEmpty() && spendAmount > 0) {
+
+                if (selectedItem.balance < spendAmount) {
+                    return@launch
                 }
+
+                handleDataState { copy(uiState = UiState.Loading) }
+
                 firestoreRepo.addSpend(
                     ExpenseItem(
-                        title = uiDataState.value.selectedCategory.categoryName,
-                        price = uiDataState.value.spendBalance.toInt(),
+                        title = currentUiData.selectedCategory.categoryName,
+                        price = spendAmount,
                         isPriceUp = false,
-                        spendOrAddCard = uiDataState.value.selectedCardItem
+                        spendOrAddCard = selectedItem
                     )
                 )
-                handleDataState {
-                    copy(
-                        uiState = UiState.Success
-                    )
-                }
-            }
 
+                handleDataState { copy(uiState = UiState.Success) }
+            }
         }
     }
 
-    fun addBalance(){
+    fun addBalance() {
         viewModelScope.launch {
-            firestoreRepo.addBalance(
-                ExpenseItem(
-                    title = "Gelir",
-                    price = uiDataState.value.addBalance.toInt(),
-                    isPriceUp = true,
-                    spendOrAddCard = uiDataState.value.selectedCardItem
+            val currentUiData = uiDataState.value
+            if (currentUiData.selectedCardItem.name.isNotEmpty() && currentUiData.addBalance.isNotEmpty()) {
+
+                handleDataState { copy(uiState = UiState.Loading) }
+
+                firestoreRepo.addBalance(
+                    ExpenseItem(
+                        title = "Gelir",
+                        price = currentUiData.addBalance.toInt(),
+                        isPriceUp = true,
+                        spendOrAddCard = currentUiData.selectedCardItem
+                    )
                 )
-            )
+
+                handleDataState {
+                    copy(
+                        uiState = UiState.Success,
+                        addBalance = ""
+                    )
+                }
+            }
         }
     }
 }

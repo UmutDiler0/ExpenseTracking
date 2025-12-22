@@ -28,7 +28,6 @@ interface UserDao {
     @Update
     suspend fun updateUser(user: User)
 
-
     @Query("UPDATE users SET totalBalance = :newBalance")
     suspend fun updateTotalBalance(newBalance: Int)
 

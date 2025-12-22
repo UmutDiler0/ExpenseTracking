@@ -1,6 +1,7 @@
 package com.expense.expensetracking.presentation.home.add_balance
 
 import android.graphics.Paint
+import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,11 +11,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -25,6 +28,8 @@ import com.expense.expensetracking.common.component.CustomTopAppBar
 import com.expense.expensetracking.common.component.LoadingScreen
 import com.expense.expensetracking.common.util.UiState
 import com.expense.expensetracking.presentation.home.component.CustomInputField
+import com.expense.expensetracking.presentation.home.component.Menu
+import com.expense.expensetracking.presentation.home.component.MenuScreen
 import com.expense.expensetracking.presentation.home.component.SelectionRow
 import com.expense.expensetracking.presentation.home.ui.HomeIntent
 import com.expense.expensetracking.presentation.home.ui.HomeState
@@ -43,14 +48,29 @@ fun AddBalanceScreen(
 ){
     val state by viewModel.uiDataState.collectAsState()
 
+    LaunchedEffect(state.uiState) {
+        if(state.uiState == UiState.Success){
+            onPopBackStack()
+        }
+    }
+
     when(state.uiState){
         is UiState.Idle -> {
-            AddBalanceIdle(
-                viewModel,
-                state
-            ) {
-                onPopBackStack()
+            if(state.currentMenuState == Menu.IDLE){
+                AddBalanceIdle(
+                    viewModel,
+                    state
+                ) {
+                    onPopBackStack()
+                }
+            }else{
+                MenuScreen(
+                    state,
+                    viewModel,
+                    menuType = Menu.CARDS
+                )
             }
+
         }
         is UiState.Loading -> {
             LoadingScreen()
@@ -68,6 +88,7 @@ fun AddBalanceIdle(
 ){
     val contentColor = if (isSystemInDarkTheme()) TextLight else TextDark
     val labelColor = if (isSystemInDarkTheme()) TextGrayDark else TextGrayLight
+    val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -107,21 +128,24 @@ fun AddBalanceIdle(
 
             SelectionRow(
                 icon = Icons.Default.CreditCard,
-                title = "Mastercard",
-                subtitle = "**** 1234",
+                title = state.selectedCardItem.name,
                 backgroundColor = if (isSystemInDarkTheme()) SurfaceDark else SurfaceLight,
                 contentColor = contentColor,
                 iconBgColor = if (isSystemInDarkTheme()) Color.White.copy(0.1f) else Color(
                     0xFFD1D5DB
                 )
             ){
-
+                if(state.user.cardList.isNotEmpty()){
+                    viewModel.handleIntent(HomeIntent.SetMenu(Menu.CARDS))
+                }else{
+                    Toast.makeText(context ,"Herhngi bir kart bulunamadı önce kart ekleyiniz", Toast.LENGTH_LONG).show()
+                }
             }
         }
         AppBtn(
             "Kaydet"
         ){
-            onPopBackStack()
+            viewModel.addBalance()
         }
     }
 }
