@@ -60,7 +60,7 @@ fun MenuScreen(
         }
         if (menuType == Menu.CATEGORY) {
             itemsIndexed(Category.categoryList){ index, item ->
-                MenuItem(item.iconName, item.icon){
+                MenuItem(item.categoryName, item.icon){
                     viewModel.handleIntent(HomeIntent.SelectCategory(Category.categoryList.get(index)))
                     viewModel.handleIntent(HomeIntent.SetMenu(Menu.IDLE))
                 }

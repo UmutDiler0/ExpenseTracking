@@ -48,28 +48,81 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.expense.expensetracking.common.component.CustomTopAppBar
+import com.expense.expensetracking.common.component.LoadingScreen
+import com.expense.expensetracking.common.util.UiState
 import com.expense.expensetracking.ui.theme.BorderColor
 import com.expense.expensetracking.ui.theme.ChartAmber
 import com.expense.expensetracking.ui.theme.ChartPink
 import com.expense.expensetracking.ui.theme.ChartSky
+import com.expense.expensetracking.ui.theme.Manrope
 import com.expense.expensetracking.ui.theme.PrimaryGreen
 import com.expense.expensetracking.ui.theme.SurfaceDark
 import com.expense.expensetracking.ui.theme.TextGray
 import com.expense.expensetracking.ui.theme.TextWhite
 import java.util.Calendar
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 @Composable
 fun ReportsScreen(viewModel: ReportsViewModel = hiltViewModel()) {
     val state by viewModel.uiDataState.collectAsStateWithLifecycle()
 
+    when (state.uiState) {
+        is UiState.Idle -> {
+            if (state.totalExpense == 0) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        "Harcama yapmaya başla",
+                        color = Color.White,
+                        fontFamily = Manrope,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 22.sp
+                    )
+                }
+            } else {
+                ReportIdleScreen(
+                    viewModel,
+                    state
+                )
+            }
 
+        }
+
+        is UiState.Success -> {}
+        is UiState.Loading -> {
+            LoadingScreen()
+        }
+
+        is UiState.Error -> {}
+    }
+
+
+}
+
+@Composable
+fun ReportIdleScreen(
+    viewModel: ReportsViewModel,
+    state: ReportsState
+) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
         contentPadding = PaddingValues(bottom = 24.dp)
     ) {
         item {
-            CustomTopAppBar(header = "Raporlar", isBackBtnActive = false, isTrailingIconActive = false, icon = Icons.Default.Add) { }
+            CustomTopAppBar(
+                header = "Raporlar",
+                isBackBtnActive = false,
+                isTrailingIconActive = false,
+                icon = Icons.Default.Add
+            ) { }
         }
 
         // Period Selector
@@ -84,16 +137,29 @@ fun ReportsScreen(viewModel: ReportsViewModel = hiltViewModel()) {
 
         // Stats Grid
         item {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                StatCard(modifier = Modifier.weight(1f), title = "Toplam Harcama", value = "₺${state.totalExpense}")
-                StatCard(modifier = Modifier.weight(1f), title = "Ortalama Harcama", value = "₺${state.averageExpense}")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                StatCard(
+                    modifier = Modifier.weight(1f),
+                    title = "Toplam Harcama",
+                    value = "₺${state.totalExpense}"
+                )
+                StatCard(
+                    modifier = Modifier.weight(1f),
+                    title = "Ortalama Harcama",
+                    value = "₺${state.averageExpense}"
+                )
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
 
         item {
             CustomBarChart(
-                modifier = Modifier.height(200.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .height(200.dp)
+                    .fillMaxWidth(),
                 weeklyData = state.weeklyBarData
             )
         }
@@ -281,9 +347,18 @@ fun CustomDonutChart(modifier: Modifier = Modifier, data: Map<String, Int>) {
 @Composable
 fun CategoryLegendItem(name: String, value: String, color: Color) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(modifier = Modifier.size(12.dp).clip(CircleShape).background(color))
+        Box(modifier = Modifier
+            .size(12.dp)
+            .clip(CircleShape)
+            .background(color))
         Spacer(modifier = Modifier.width(12.dp))
-        Text(name, color = Color(0xFFd4d4d8), fontSize = 14.sp, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
+        Text(
+            name,
+            color = Color(0xFFd4d4d8),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.weight(1f)
+        )
         Text(value, color = TextWhite, fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
 }
@@ -300,6 +375,7 @@ fun getCategoryColor(category: String): Color {
 }
 
 fun getCategoryColorByIndex(index: Int): Color {
-    val colors = listOf(ChartAmber, ChartSky, ChartPink, PrimaryGreen, Color(0xFF8B5CF6), Color(0xFFF59E0B))
+    val colors =
+        listOf(ChartAmber, ChartSky, ChartPink, PrimaryGreen, Color(0xFF8B5CF6), Color(0xFFF59E0B))
     return colors[index % colors.size]
 }

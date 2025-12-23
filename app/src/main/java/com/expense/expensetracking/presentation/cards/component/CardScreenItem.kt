@@ -59,7 +59,7 @@ fun CardScreenItem(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    item.balance.toString(),
+                    item.balance.toString() + " ₺",
                     fontFamily = Manrope,
                     fontWeight = FontWeight.Thin
                 )

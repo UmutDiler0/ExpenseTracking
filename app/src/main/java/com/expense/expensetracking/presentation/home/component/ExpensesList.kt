@@ -28,7 +28,7 @@ fun ExpensesList(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "Henüz Harcama Yapmamışsın :(",
+                "Henüz Harcama Yapmamışsın Harcama Yapmaya Başla",
                 fontFamily = Manrope,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp

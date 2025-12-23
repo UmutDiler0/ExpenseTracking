@@ -65,7 +65,7 @@ fun ExpenseItem(
         }
         Box(modifier = Modifier.weight(1f))
         Text(
-            if(item.priceUp) "+" + item.price.toString() else "-" + item.price.toString(),
+            if(item.priceUp) "+" + item.price.toString() + " ₺" else "-" + item.price.toString() + " ₺",
 
         )
     }
