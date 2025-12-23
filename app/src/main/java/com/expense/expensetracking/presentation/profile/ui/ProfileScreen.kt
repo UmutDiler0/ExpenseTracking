@@ -1,5 +1,7 @@
 package com.expense.expensetracking.presentation.profile.ui
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,11 +35,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -91,6 +95,8 @@ fun ProfileIdleScreen(
     viewModel: ProfileViewModel,
     state: ProfileState
 ) {
+    val context = LocalContext.current
+    val intent = remember { Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.google.com/forms/d/14ld_Fd9V68HQxCWu_vnMxPn9mjTsRVIIJeFMkonctfY/edit")) }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -157,15 +163,17 @@ fun ProfileIdleScreen(
         item {
             SectionTitle("GENEL")
             ProfileSectionContainer {
-                ProfileMenuItem(
-                    icon = androidx.compose.material.icons.Icons.Default.Settings,
-                    label = "Hesap Ayarları",
-                    showDivider = true
-                )
+//                ProfileMenuItem(
+//                    icon = androidx.compose.material.icons.Icons.Default.Settings,
+//                    label = "Hesap Ayarları",
+//                    showDivider = true
+//                )
                 ProfileMenuItem(
                     icon = androidx.compose.material.icons.Icons.Default.Notifications,
                     label = "Bildirimler"
-                )
+                ){
+                    context.startActivity(intent)
+                }
             }
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -177,11 +185,15 @@ fun ProfileIdleScreen(
                     icon = androidx.compose.material.icons.Icons.Default.Help,
                     label = "Yardım Merkezi",
                     showDivider = true
-                )
+                ){
+                    context.startActivity(intent)
+                }
                 ProfileMenuItem(
                     icon = androidx.compose.material.icons.Icons.Default.Message,
                     label = "Geri Bildirim Gönder"
-                )
+                ){
+                    context.startActivity(intent)
+                }
             }
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -256,14 +268,17 @@ fun ProfileSectionContainer(content: @Composable ColumnScope.() -> Unit) {
 fun ProfileMenuItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     label: String,
-    showDivider: Boolean = false
+    showDivider: Boolean = false,
+    onClick: () -> Unit,
 ) {
     Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp)
-                .clickable { }
+                .clickable {
+                    onClick()
+                }
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {

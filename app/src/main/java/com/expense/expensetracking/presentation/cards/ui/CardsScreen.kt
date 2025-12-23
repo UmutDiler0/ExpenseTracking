@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.expense.expensetracking.common.component.AppBtn
 import com.expense.expensetracking.common.component.CustomTopAppBar
 import com.expense.expensetracking.common.component.ErrorScreen
 import com.expense.expensetracking.common.component.LoadingScreen
@@ -106,12 +107,15 @@ fun CardIdle(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "Herhangi bir kart bulunamadı",
+                        "Herhangi bir kart bulunamadı kart ekle",
                         modifier =Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         fontFamily = Manrope,
                         fontWeight = FontWeight.SemiBold
                     )
+                    AppBtn("Kart ekle") {
+                        onNavigateAddItem()
+                    }
                 }
             }
         }
