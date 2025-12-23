@@ -1,5 +1,6 @@
 package com.expense.expensetracking.presentation.reports.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material3.Card
@@ -41,8 +43,12 @@ import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.expense.expensetracking.common.component.CustomTopAppBar
 import com.expense.expensetracking.ui.theme.BorderColor
 import com.expense.expensetracking.ui.theme.ChartAmber
 import com.expense.expensetracking.ui.theme.ChartPink
@@ -51,116 +57,68 @@ import com.expense.expensetracking.ui.theme.PrimaryGreen
 import com.expense.expensetracking.ui.theme.SurfaceDark
 import com.expense.expensetracking.ui.theme.TextGray
 import com.expense.expensetracking.ui.theme.TextWhite
+import java.util.Calendar
 
 @Composable
-fun ReportsScreen(
+fun ReportsScreen(viewModel: ReportsViewModel = hiltViewModel()) {
+    val state by viewModel.uiDataState.collectAsStateWithLifecycle()
 
-){
+
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
         contentPadding = PaddingValues(bottom = 24.dp)
     ) {
-        // Header
         item {
-            HeaderSection(title = "Giderler", showPlus = true)
+            CustomTopAppBar(header = "Raporlar", isBackBtnActive = false, isTrailingIconActive = false, icon = Icons.Default.Add) { }
         }
 
-        // Segmented Control
+        // Period Selector
         item {
-            var selectedPeriod by remember { mutableStateOf("Haftalık") }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp)
-                    .background(Color(0xFF27272a).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
-                    .padding(4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                listOf("Günlük", "Haftalık", "Aylık").forEach { period ->
-                    val isSelected = selectedPeriod == period
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(32.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(if (isSelected) Color(0xFF3f3f46) else Color.Transparent)
-                            .clickable { selectedPeriod = period },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = period,
-                            color = if (isSelected) TextWhite else TextGray,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
+            PeriodSelector(
+                selectedPeriod = state.selectedPeriod,
+                onPeriodSelected = { newPeriod ->
+                    viewModel.handleIntent(ReportsIntent.ChangePeriod(newPeriod))
                 }
-            }
+            )
         }
 
         // Stats Grid
         item {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                StatCard(modifier = Modifier.weight(1f), title = "Toplam Harcama", value = "₺860,50")
-                StatCard(modifier = Modifier.weight(1f), title = "Ortalama Harcama", value = "₺122,92")
+                StatCard(modifier = Modifier.weight(1f), title = "Toplam Harcama", value = "₺${state.totalExpense}")
+                StatCard(modifier = Modifier.weight(1f), title = "Ortalama Harcama", value = "₺${state.averageExpense}")
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        // Weekly Bar Chart
         item {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = SurfaceDark),
-                border = androidx.compose.foundation.BorderStroke(1.dp, BorderColor),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Haftalık Harcama Grafiği", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                    Text("₺860,50", fontSize = 32.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 4.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
-                        Text("Geçen haftaya göre", color = TextGray, fontSize = 14.sp)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Box(modifier = Modifier
-                            .background(PrimaryGreen.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                            .padding(horizontal = 6.dp, vertical = 2.dp)) {
-                            Text("+15.2%", color = PrimaryGreen, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(24.dp))
-                    CustomBarChart(modifier = Modifier.height(200.dp).fillMaxWidth())
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
+            CustomBarChart(
+                modifier = Modifier.height(200.dp).fillMaxWidth(),
+                weeklyData = state.weeklyBarData
+            )
         }
 
-        // Categories Donut Chart
+        // Donut Chart Bölümü (Dinamik Kategori Listesi)
         item {
             Card(
                 colors = CardDefaults.cardColors(containerColor = SurfaceDark),
-                border = androidx.compose.foundation.BorderStroke(1.dp, BorderColor),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth()
+                border = BorderStroke(1.dp, BorderColor),
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text("Harcama Kategorileri", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                     Spacer(modifier = Modifier.height(24.dp))
+
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(contentAlignment = Alignment.Center, modifier = Modifier.size(160.dp)) {
-                            CustomDonutChart(modifier = Modifier.size(160.dp))
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("TOPLAM", color = TextGray, fontSize = 10.sp, fontWeight = FontWeight.Medium)
-                                Text("₺860", color = TextWhite, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        CustomDonutChart(
+                            modifier = Modifier.size(140.dp),
+                            data = state.categoryDistribution
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            state.categoryDistribution.forEach { (category, amount) ->
+                                CategoryLegendItem(category, "₺$amount", getCategoryColor(category))
                             }
-                        }
-                        Spacer(modifier = Modifier.width(24.dp))
-                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            CategoryLegendItem("Fatura", "₺344,20", ChartAmber)
-                            CategoryLegendItem("Market", "₺258,15", ChartSky)
-                            CategoryLegendItem("Ulaşım", "₺172,10", ChartPink)
-                            CategoryLegendItem("Diğer", "₺86,05", PrimaryGreen)
                         }
                     }
                 }
@@ -170,27 +128,40 @@ fun ReportsScreen(
 }
 
 @Composable
-fun HeaderSection(title: String, showPlus: Boolean = false) {
+fun PeriodSelector(
+    selectedPeriod: String,
+    onPeriodSelected: (String) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 16.dp)
+            .background(Color(0xFF27272a).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        IconButton(onClick = {}) {
-            Icon(androidx.compose.material.icons.Icons.Default.ChevronLeft, contentDescription = "Back", tint = Color(0xFFd4d4d8))
-        }
-        Text(title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-        if (showPlus) {
-            IconButton(onClick = {}) {
-                Icon(androidx.compose.material.icons.Icons.Default.Add, contentDescription = "Add", tint = TextWhite)
+        listOf("Günlük", "Haftalık", "Aylık").forEach { period ->
+            val isSelected = selectedPeriod == period
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(32.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (isSelected) Color(0xFF3f3f46) else Color.Transparent)
+                    .clickable { onPeriodSelected(period) },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = period,
+                    color = if (isSelected) Color.White else Color.Gray,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
-        } else {
-            Spacer(modifier = Modifier.size(48.dp)) // Dengelemek için boşluk
         }
     }
 }
+
 
 @Composable
 fun StatCard(title: String, value: String, modifier: Modifier = Modifier) {
@@ -209,57 +180,100 @@ fun StatCard(title: String, value: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CustomBarChart(modifier: Modifier = Modifier) {
-    val data = listOf(450f, 200f, 350f, 600f, 300f, 860f, 400f)
+fun CustomBarChart(
+    modifier: Modifier = Modifier,
+    weeklyData: List<Float>
+) {
     val labels = listOf("Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz")
-    val maxVal = data.maxOrNull() ?: 1f
+    val maxVal = weeklyData.maxOrNull()?.takeIf { it > 0 } ?: 1f
 
-    Canvas(modifier = modifier) {
-        val barWidth = size.width / (data.size * 2)
-        val spacing = size.width / data.size
-
-        data.forEachIndexed { index, value ->
-            val barHeight = (value / maxVal) * size.height
-            val x = (spacing * index) + (spacing / 2) - (barWidth / 2)
-            val y = size.height - barHeight
-
-            // Bar çizimi
-            drawRoundRect(
-                color = if (index == 5) PrimaryGreen else PrimaryGreen.copy(alpha = 0.2f),
-                topLeft = Offset(x, y),
-                size = Size(barWidth, barHeight),
-                cornerRadius = CornerRadius(6.dp.toPx())
-            )
-
-            // Label çizimi (Burada basitlik adına text çizimi yapılmadı, normalde nativeCanvas kullanılır)
-        }
+    // Bugünün indexini bul (Pazartesi = 0, ..., Pazar = 6)
+    val calendar = Calendar.getInstance()
+    val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+    val todayIndex = when (dayOfWeek) {
+        Calendar.MONDAY -> 0
+        Calendar.TUESDAY -> 1
+        Calendar.WEDNESDAY -> 2
+        Calendar.THURSDAY -> 3
+        Calendar.FRIDAY -> 4
+        Calendar.SATURDAY -> 5
+        Calendar.SUNDAY -> 6
+        else -> -1
     }
-    // Basit labels
-    Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-        labels.forEach { Text(it, color = TextGray, fontSize = 12.sp, fontWeight = FontWeight.Bold) }
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Bottom
+    ) {
+        weeklyData.forEachIndexed { index, value ->
+            val isToday = index == todayIndex // Bugün mü kontrolü
+
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(160.dp)
+                        .padding(horizontal = 4.dp)
+                ) {
+                    val barHeight = (value / maxVal) * size.height
+                    val barWidth = 12.dp.toPx()
+
+                    drawRoundRect(
+                        // Sadece bugün ise koyu yeşil, değilse soluk yeşil
+                        color = if (isToday) PrimaryGreen else PrimaryGreen.copy(alpha = 0.2f),
+                        topLeft = Offset((size.width - barWidth) / 2, size.height - barHeight),
+                        size = Size(barWidth, barHeight),
+                        cornerRadius = CornerRadius(4.dp.toPx())
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = labels[index],
+                    // Metin rengini de bugün ise beyaz/yeşil yapabilirsin
+                    color = if (isToday) Color.White else TextGray,
+                    fontSize = 12.sp,
+                    fontWeight = if (isToday) FontWeight.ExtraBold else FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }
 
 @Composable
-fun CustomDonutChart(modifier: Modifier = Modifier) {
-    // Veriler: Amber, Sky, Pink, Green
-    val proportions = listOf(0.4f, 0.3f, 0.2f, 0.1f)
-    val colors = listOf(ChartAmber, ChartSky, ChartPink, PrimaryGreen)
+fun CustomDonutChart(modifier: Modifier = Modifier, data: Map<String, Int>) {
+    val total = data.values.sum().toFloat()
 
     Canvas(modifier = modifier) {
         var startAngle = -90f
-        val strokeWidth = 30f // Donut kalınlığı
-
-        proportions.forEachIndexed { index, percent ->
-            val sweepAngle = percent * 360f
+        if (total == 0f) {
             drawArc(
-                color = colors[index],
-                startAngle = startAngle,
-                sweepAngle = sweepAngle,
+                color = Color.Gray.copy(alpha = 0.2f),
+                startAngle = 0f,
+                sweepAngle = 360f,
                 useCenter = false,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
+                style = Stroke(width = 35f)
             )
-            startAngle += sweepAngle
+        } else {
+            // Index yerine kategori adına (key) göre renk alıyoruz
+            data.forEach { (categoryName, value) ->
+                val sweepAngle = (value / total) * 360f
+                drawArc(
+                    color = getCategoryColor(categoryName), // Artık kategoriye özel renk basar
+                    startAngle = startAngle,
+                    sweepAngle = sweepAngle,
+                    useCenter = false,
+                    style = Stroke(width = 35f, cap = StrokeCap.Round)
+                )
+                startAngle += sweepAngle
+            }
         }
     }
 }
@@ -272,4 +286,20 @@ fun CategoryLegendItem(name: String, value: String, color: Color) {
         Text(name, color = Color(0xFFd4d4d8), fontSize = 14.sp, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
         Text(value, color = TextWhite, fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
+}
+
+fun getCategoryColor(category: String): Color {
+    return when (category) {
+        "Fatura" -> ChartAmber
+        "Market" -> ChartSky
+        "Ulaşım" -> ChartPink
+        "Eğlence" -> Color(0xFF8B5CF6)
+        "Sağlık" -> Color(0xFF10B981)
+        else -> PrimaryGreen
+    }
+}
+
+fun getCategoryColorByIndex(index: Int): Color {
+    val colors = listOf(ChartAmber, ChartSky, ChartPink, PrimaryGreen, Color(0xFF8B5CF6), Color(0xFFF59E0B))
+    return colors[index % colors.size]
 }
