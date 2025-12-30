@@ -3,7 +3,8 @@
 ExpenseTracking is a modern Android expense tracking application that allows users to manage their income and daily expenses efficiently. The application is built using up-to-date Android technologies, follows clean architecture principles, and provides a scalable and maintainable structure.
 
 
-https://github.com/user-attachments/assets/7e136dac-934d-4bdc-a8ee-172f764419de
+https://github.com/user-attachments/assets/f816eacf-7f90-427e-b6cb-ada6cad6ed9d
+
 
 
 ## Features
@@ -26,6 +27,7 @@ https://github.com/user-attachments/assets/7e136dac-934d-4bdc-a8ee-172f764419de
 - Navigation Compose
 - DataStore Preferences
 - Room Database
+- WorkManager
 
 ### Dependency Injection
 - Hilt
