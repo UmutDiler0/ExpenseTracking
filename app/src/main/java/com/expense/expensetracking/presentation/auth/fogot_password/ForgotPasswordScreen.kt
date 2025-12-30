@@ -10,24 +10,28 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.expense.expensetracking.R
 import com.expense.expensetracking.common.component.AppBtn
 import com.expense.expensetracking.common.component.BackBtn
 import com.expense.expensetracking.common.component.LoadingScreen
 import com.expense.expensetracking.common.util.UiState
 import com.expense.expensetracking.presentation.auth.component.AuthEditText
 import com.expense.expensetracking.presentation.auth.component.AuthHeader
+import com.expense.expensetracking.ui.theme.Dimens
 
 @Composable
 fun ForgotPasswordScreen(
@@ -35,21 +39,24 @@ fun ForgotPasswordScreen(
     onPopBackStack: () -> Unit
 ){
     val state by viewModel.uiDataState.collectAsStateWithLifecycle()
-    when(state.uiState){
-        is UiState.Idle -> {
-            ForgotPasswordIdleScreen(viewModel, state){
-                onPopBackStack()
+    
+    LaunchedEffect(state.uiState) {
+        when(val uiState = state.uiState) {
+            is UiState.Success -> {
+                // Success message already handled by UI
             }
+            else -> {}
         }
-        is UiState.Error -> {
-
+    }
+    
+    when(state.uiState){
+        is UiState.Idle, is UiState.Error, is UiState.Success -> {
+            ForgotPasswordIdleScreen(viewModel, state, onPopBackStack)
         }
-        is UiState.Success -> {}
         is UiState.Loading -> {
             LoadingScreen()
         }
     }
-
 }
 
 @Composable
@@ -64,8 +71,8 @@ fun ForgotPasswordIdleScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
-            .imePadding() // Klavye açılınca yukarı kayması için
+            .padding(Dimens.paddingLarge)
+            .imePadding()
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround
@@ -77,16 +84,16 @@ fun ForgotPasswordIdleScreen(
                 onPopBackStack()
             }
             AuthHeader(
-                header = "Şifremi Unuttum",
-                label = "Hesabına bağlı email adresini gir"
+                header = stringResource(R.string.forgot_password_title),
+                label = stringResource(R.string.forgot_password_subtitle)
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(Dimens.spacingExtraLarge))
 
         AuthEditText(
-            label = "Email",
-            hint = "Email adresiniz",
+            label = stringResource(R.string.forgot_password_email_label),
+            hint = stringResource(R.string.forgot_password_email_hint),
             isPassword = false,
             value = state.email,
             keyboardType = KeyboardType.Email,
@@ -95,18 +102,33 @@ fun ForgotPasswordIdleScreen(
                 keyboardController?.hide()
                 focusManager.clearFocus()
             },
-
             onValueChange = { newEmail ->
                 viewModel.handleIntent(FPIntent.SetEmail(newEmail))
             }
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(Dimens.spacingLarge))
 
-        AppBtn(text = "Bağlantı Gönder") {
-            viewModel.handleIntent(FPIntent.Submit)
+        // Error message
+        if (state.uiState is UiState.Error) {
+            Text(
+                text = (state.uiState as UiState.Error).message,
+                color = Color.Red,
+                modifier = Modifier.padding(bottom = Dimens.paddingSmall)
+            )
         }
 
+        // Success message
+        if (state.uiState is UiState.Success) {
+            Text(
+                text = stringResource(R.string.forgot_password_success),
+                color = Color.Green,
+                modifier = Modifier.padding(bottom = Dimens.paddingSmall)
+            )
+        }
 
+        AppBtn(text = stringResource(R.string.forgot_password_button)) {
+            viewModel.handleIntent(FPIntent.Submit)
+        }
     }
 }

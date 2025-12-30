@@ -15,5 +15,7 @@ data class HomeState(
     val spendBalance: String = "",
     val selectedCardItem: CardItem = CardItem(),
     val selectedCategory: Category = Category("",""),
-    val currentMenuState: Menu = Menu.IDLE
+    val currentMenuState: Menu = Menu.IDLE,
+    val selectedCardFilter: String? = null, // null = Tümü
+    val filteredExpenses: List<ExpenseItem> = emptyList()
 )

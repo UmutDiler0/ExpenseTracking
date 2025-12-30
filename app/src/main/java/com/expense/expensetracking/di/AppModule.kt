@@ -2,6 +2,7 @@ package com.expense.expensetracking.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.expense.expensetracking.AppDataBase
 import com.expense.expensetracking.data.local_repo.UserDao
 import com.expense.expensetracking.data.manager.DataStoreManager
@@ -55,5 +56,11 @@ object AppModule {
     @Singleton
     fun provideDataStoreManager(@ApplicationContext context: Context): DataStoreManager {
         return DataStoreManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
+        return WorkManager.getInstance(context)
     }
 }

@@ -11,40 +11,54 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryGreen,
-    onPrimary = BackgroundDark, // Text on primary button
+    onPrimary = Color.White,
+    primaryContainer = PrimaryGreen.copy(alpha = 0.2f),
+    onPrimaryContainer = PrimaryGreen,
+    secondary = PrimaryGreen,
+    onSecondary = Color.White,
     background = BackgroundDark,
     onBackground = TextWhite,
     surface = SurfaceDark,
     onSurface = TextWhite,
-    secondary = ChartSky, // Using Sky as secondary
-    tertiary = ChartPink  // Using Pink as tertiary
+    surfaceVariant = Color.White.copy(alpha = 0.1f),
+    onSurfaceVariant = TextGrayLight,
+    outline = BorderColor,
+    error = Color(0xFFFF5252)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = PrimaryGreen,
-    onPrimary = BackgroundDark,
+    primary = PrimaryGreenDark,
+    onPrimary = Color.White,
+    primaryContainer = PrimaryGreenDark.copy(alpha = 0.1f),
+    onPrimaryContainer = PrimaryGreenDark,
+    secondary = PrimaryGreenDark,
+    onSecondary = Color.White,
     background = BackgroundLight,
     onBackground = TextBlack,
     surface = SurfaceLight,
     onSurface = TextBlack,
-    secondary = ChartSky,
-    tertiary = ChartPink
+    surfaceVariant = Color(0xFFF8FAFC),
+    onSurfaceVariant = TextGrayDark,
+    outline = Color(0xFFE2E8F0),
+    error = Color(0xFFD32F2F)
 )
 
 @Composable
 fun ExpenseTrackingTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean,
     content: @Composable () -> Unit
 ) {
+    // Uygulama içi ayara göre tema seçimi (sistem teması yok sayılır)
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-    val view = LocalView.current
 
+    val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window

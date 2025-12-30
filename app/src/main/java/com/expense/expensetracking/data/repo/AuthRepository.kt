@@ -108,4 +108,24 @@ class AuthRepository @Inject constructor(
             Log.e("AuthRepository", e.message ?: "Logout Error")
         }
     }
+
+    fun sendPasswordResetEmail(email: String): Flow<Resource<Unit>> = flow {
+        emit(Resource.Loading)
+        try {
+            auth.sendPasswordResetEmail(email).await()
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.localizedMessage ?: "Şifre sıfırlama emaili gönderilemedi"))
+        }
+    }
+
+    suspend fun checkEmailExists(email: String): Boolean {
+        return try {
+            val signInMethods = auth.fetchSignInMethodsForEmail(email).await()
+            !signInMethods.signInMethods.isNullOrEmpty()
+        } catch (e: Exception) {
+            Log.e("AuthRepository", "Email kontrol hatası: ${e.message}")
+            false
+        }
+    }
 }

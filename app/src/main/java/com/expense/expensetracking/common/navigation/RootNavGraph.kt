@@ -1,6 +1,8 @@
 package com.expense.expensetracking.common.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -20,6 +22,7 @@ import com.expense.expensetracking.presentation.splash.SplashScreen
 @Composable
 fun RootNavController(
     navController: NavHostController,
+    deepLinkUri: Uri? = null
 ){
     NavHost(
         navController = navController,
@@ -61,7 +64,7 @@ fun RootNavController(
         authNavGraph(navController)
 
         composable<MainGraph> {
-            MainNavGraph(navController)
+            MainNavGraph(navController, deepLinkUri)
         }
     }
 }

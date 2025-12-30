@@ -1,3 +1,166 @@
 <resources>
     <string name="app_name">ExpenseTracking</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">Harcamalarını Takip Et</string>
+    <string name="onboarding_desc_1">Nereye ne kadar harcadığını kolayca gör.</string>
+    <string name="onboarding_title_2">Tasarruf Et</string>
+    <string name="onboarding_desc_2">Ne kadar harcadığını gör ve tasarruf et.</string>
+    <string name="onboarding_title_3">Harcamalarını Takip Et</string>
+    <string name="onboarding_desc_3">Nereye ne kadar harcadığını kolayca gör.</string>
+    <string name="onboarding_skip">Atla</string>
+    <string name="onboarding_next">İleri</string>
+    <string name="onboarding_start">Hemen Başla</string>
+    
+    <!-- Auth - Login -->
+    <string name="login_title">Tekrar Hoş Geldin!</string>
+    <string name="login_subtitle">Devam etmek için giriş yap</string>
+    <string name="login_email_label">Email</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_label">Şifre</string>
+    <string name="login_password_hint">Şifre</string>
+    <string name="login_remember_me">Beni Hatırla</string>
+    <string name="login_forgot_password">Şifremi Unuttum?</string>
+    <string name="login_button">Giriş Yap</string>
+    <string name="login_no_account">Hesabın yok mu?</string>
+    <string name="login_create_account">Hesap Oluştur</string>
+    
+    <!-- Auth - Register -->
+    <string name="register_title">Hoş Geldin!</string>
+    <string name="register_subtitle">Devam etmek için kayıt ol</string>
+    <string name="register_email_label">Email</string>
+    <string name="register_email_hint">Email adresinizi girin</string>
+    <string name="register_password_label">Password</string>
+    <string name="register_password_hint">Şifrenizi belirleyin</string>
+    <string name="register_name_label">Adınız</string>
+    <string name="register_name_hint">Adınızı Yazınız</string>
+    <string name="register_surname_label">Soyadınız</string>
+    <string name="register_surname_hint">Soyadınızı giriniz</string>
+    <string name="register_personal_info">Kişisel Bilgiler</string>
+    <string name="register_button">Kayıt Ol</string>
+    <string name="register_has_account">Hesabın var mı?</string>
+    <string name="register_login">Giriş Yap</string>
+    <string name="register_back">Geri</string>
+    
+    <!-- Auth - Forgot Password -->
+    <string name="forgot_password_title">Şifremi Unuttum</string>
+    <string name="forgot_password_subtitle">Hesabına bağlı email adresini gir</string>
+    <string name="forgot_password_email_label">Email</string>
+    <string name="forgot_password_email_hint">Email adresiniz</string>
+    <string name="forgot_password_button">Bağlantı Gönder</string>
+    <string name="forgot_password_success">İşlem Başarılı</string>
+    
+    <!-- Home Screen -->
+    <string name="home_title">Ana Ekran</string>
+    <string name="home_filter_all">Tümü</string>
+    <string name="home_empty_title">Henüz Harcama Yok</string>
+    <string name="home_empty_description">Harcama ekleyerek takibe başlayın</string>
+    <string name="home_add_expense">Harcama Ekle</string>
+    
+    <!-- Add Balance Screen -->
+    <string name="add_balance_title">Gelir Ekle</string>
+    <string name="add_balance_amount_label">Miktar</string>
+    <string name="add_balance_amount_hint">0.00 ₺</string>
+    <string name="add_balance_card_label">Para Hangi Karta Eklenecek?</string>
+    <string name="add_balance_select_card">Bir Kart Seçin</string>
+    <string name="add_balance_add_card_first">Lütfen önce bir kart ekleyin</string>
+    <string name="add_balance_save_button">Kaydet</string>
+    <string name="add_balance_enter_amount">Lütfen miktar giriniz</string>
+    <string name="add_balance_min_amount">Minimum tutar 1 ₺ olmalıdır</string>
+    <string name="add_balance_max_amount">Maksimum tutar 999.999.999 ₺ olabilir</string>
+    <string name="add_balance_select_card_error">Lütfen bir kart seçin</string>
+    
+    <!-- Spend Balance Screen -->
+    <string name="spend_balance_title">Gider Ekle</string>
+    <string name="spend_balance_amount_label">Harcama Tutarı</string>
+    <string name="spend_balance_amount_hint">0.00 ₺</string>
+    <string name="spend_balance_category_label">Harcama Kategorisi</string>
+    <string name="spend_balance_select_category">Kategori Seçin</string>
+    <string name="spend_balance_card_label">Ödeme Yapılan Kart</string>
+    <string name="spend_balance_select_card">Kart Seçin</string>
+    <string name="spend_balance_add_card_first">Önce bir kart eklemelisiniz</string>
+    <string name="spend_balance_save_button">Kaydet</string>
+    <string name="spend_balance_enter_amount">Lütfen bir tutar girin</string>
+    <string name="spend_balance_min_amount">Minimum tutar 1 ₺ olmalıdır</string>
+    <string name="spend_balance_max_amount">Maksimum tutar 999.999.999 ₺ olabilir</string>
+    <string name="spend_balance_select_category_error">Lütfen bir kategori seçin</string>
+    <string name="spend_balance_select_card_error">Lütfen bir kart seçin</string>
+    <string name="spend_balance_insufficient_balance_title">Yetersiz Bakiye</string>
+    <string name="spend_balance_insufficient_balance_message">Harcama tutarı (%1$s ₺) kartınızın bakiyesinden (%2$s ₺) fazladır. Yine de devam etmek istiyor musunuz?</string>
+    <string name="spend_balance_confirm">Evet, Devam Et</string>
+    <string name="spend_balance_cancel_dialog">İptal</string>
+    
+    <!-- Cards Screen -->
+    <string name="cards_title">Kartlarım</string>
+    <string name="cards_delete">Kartı Sil</string>
+    <string name="cards_empty_title">Henüz Bir Kartın Yok</string>
+    <string name="cards_empty_description">Harcamalarını takip etmek için hemen ilk kartını tanımlayarak başlayabilirsin.</string>
+    <string name="cards_add_button">Hemen Kart Ekle</string>
+    
+    <!-- Add Card Screen -->
+    <string name="add_card_title">Kart Ekle</string>
+    <string name="add_card_name_label">Kart Adı</string>
+    <string name="add_card_name_hint">Örn: Maaş Kartım</string>
+    <string name="add_card_balance_label">Başlangıç Bakiyesi</string>
+    <string name="add_card_balance_hint">0.00 ₺</string>
+    <string name="add_card_save_button">Kartı Kaydet</string>
+    <string name="add_card_name_empty">Kart adı boş bırakılamaz</string>
+    <string name="add_card_balance_empty">Lütfen bakiye giriniz</string>
+    <string name="add_card_name_max_length">Kart adı en fazla 24 karakter olabilir</string>
+    <string name="add_card_name_exists">Bu isimde bir kart zaten mevcut</string>
+    
+    <!-- Profile Screen -->
+    <string name="profile_title">Profil</string>
+    <string name="profile_section_general">GENEL</string>
+    <string name="profile_account_settings">Hesap Ayarları</string>
+    <string name="profile_notifications">Bildirimler</string>
+    <string name="profile_balance_limit">Bakiye limiti: %.2f TL</string>
+    <string name="profile_set_balance_limit">Bakiye Limiti Ayarla</string>
+    <string name="profile_section_support">DESTEK</string>
+    <string name="profile_help_center">Yardım Merkezi</string>
+    <string name="profile_feedback">Geri Bildirim Gönder</string>
+    <string name="profile_logout">Çıkış Yap</string>
+    <string name="profile_dialog_title">Bakiye Limiti Belirle</string>
+    <string name="profile_dialog_description">Bakiyeniz belirlediğiniz limite 500 TL\'ye kadar yaklaştığında bildirim alacaksınız.</string>
+    <string name="profile_dialog_limit_label">Limit (TL)</string>
+    <string name="profile_dialog_save">Kaydet</string>
+    <string name="profile_dialog_cancel">İptal</string>
+    
+    <!-- Settings Screen -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_section_appearance">Görünüm</string>
+    <string name="settings_dark_theme">Koyu Tema</string>
+    <string name="settings_light_theme">Açık Tema</string>
+    <string name="settings_theme_description">Uygulama temasını değiştir</string>
+    <string name="settings_section_general">Genel</string>
+    <string name="settings_language">Dil</string>
+    <string name="settings_section_account">Hesap</string>
+    <string name="settings_change_password">Şifre Değiştir</string>
+    <string name="settings_change_password_subtitle">Hesap şifrenizi güncelleyin</string>
+    <string name="settings_delete_account">Hesabı Sil</string>
+    <string name="settings_delete_account_subtitle">Hesabınızı kalıcı olarak silin</string>
+    
+    <!-- Reports Screen -->
+    <string name="reports_title">Raporlar</string>
+    <string name="reports_tab_expense">Gider</string>
+    <string name="reports_tab_income">Gelir</string>
+    <string name="reports_tab_combined">Ortak</string>
+    <string name="reports_period_daily">Günlük</string>
+    <string name="reports_period_weekly">Haftalık</string>
+    <string name="reports_period_monthly">Aylık</string>
+    <string name="reports_total_expense">Toplam Gider</string>
+    <string name="reports_average_expense">Ortalama Gider</string>
+    <string name="reports_total_income">Toplam Gelir</string>
+    <string name="reports_average_income">Ortalama Gelir</string>
+    <string name="reports_empty_expense">Bu dönemde gider kaydı bulunamadı</string>
+    <string name="reports_empty_income">Bu dönemde gelir kaydı bulunamadı</string>
+    <string name="reports_empty_combined">Bu dönemde hiçbir işlem bulunamadı</string>
+    <string name="reports_weekly_expense_chart">Haftalık Gider Grafiği</string>
+    <string name="reports_expense_categories">Gider Kategorileri</string>
+    <string name="reports_weekly_income_chart">Haftalık Gelir Grafiği</string>
+    <string name="reports_income_categories">Gelir Kategorileri</string>
+    <string name="reports_net_status">Net Durum</string>
+    <string name="reports_income_chart">Gelir Grafiği</string>
+    <string name="reports_expense_chart">Gider Grafiği</string>
+    <string name="reports_category_comparison">Kategori Karşılaştırması</string>
 </resources>

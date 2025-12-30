@@ -32,7 +32,8 @@ class CardSharedViewModel @Inject constructor(
             is SharedCardIntent.SetCardName -> {
                 handleDataState {
                     copy(
-                        addCardName = intent.name
+                        addCardName = intent.name,
+                        cardNameError = null // Kullanıcı yazarken hatayı temizle
                     )
                 }
             }
@@ -78,7 +79,12 @@ class CardSharedViewModel @Inject constructor(
                 val isCardExist = currentCards.any { it.name.equals(name, ignoreCase = true) }
 
                 if (isCardExist) {
-                    Log.e("ViewModel", "Bu isimde bir kart zaten mevcut!")
+                    // Kullanıcıya hata mesajı göster
+                    handleDataState {
+                        copy(
+                            cardNameError = "Bu isimde bir kart zaten mevcut"
+                        )
+                    }
                     return@launch
                 }
 
@@ -86,16 +92,45 @@ class CardSharedViewModel @Inject constructor(
 
                 val newCard = CardItem(
                     name = name,
-                    balance = balance.toInt()
+                    balance = balance.replace(".", "").toInt()
                 )
 
-                firestoreRepo.addCard(newCard)
+                try {
+                    firestoreRepo.addCard(newCard)
+                    
+                    handleDataState {
+                        copy(
+                            uiState = UiState.Success,
+                            addCardName = "",
+                            addCardBalance = "",
+                            cardNameError = null
+                        )
+                    }
+                } catch (e: Exception) {
+                    Log.e("ViewModel", "Kart ekleme hatası: ${e.message}")
+                    handleDataState {
+                        copy(
+                            uiState = UiState.Error(e.message ?: "Bilinmeyen hata")
+                        )
+                    }
+                }
+            }
+        }
+    }
 
+    fun deleteCard(cardItem: CardItem) {
+        viewModelScope.launch {
+            handleDataState { copy(uiState = UiState.Loading) }
+            
+            try {
+                firestoreRepo.removeCard(cardItem)
+                
+                handleDataState { copy(uiState = UiState.Idle) }
+            } catch (e: Exception) {
+                Log.e("ViewModel", "Kart silme hatası: ${e.message}")
                 handleDataState {
                     copy(
-                        uiState = UiState.Idle,
-                        addCardName = "",
-                        addCardBalance = ""
+                        uiState = UiState.Error(e.message ?: "Bilinmeyen hata")
                     )
                 }
             }

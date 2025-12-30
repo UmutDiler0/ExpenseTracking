@@ -49,12 +49,25 @@ class FirestoreRepo @Inject constructor(
         val firestoreUser = snapshot?.toObject(User::class.java)
 
         if (firestoreUser != null && firestoreUser.cardList.isNotEmpty()) {
-            userRef?.update("cardList", FieldValue.arrayRemove(cardItem))?.await()
+            val cardToRemove = firestoreUser.cardList.find { it.name == cardItem.name }
+            val cardBalance = cardToRemove?.balance ?: 0
+            
+            userRef?.update(
+                "cardList", FieldValue.arrayRemove(cardItem),
+                "totalBalance", FieldValue.increment(-cardBalance.toLong())
+            )?.await()
 
             val localUser = userDao.getUser()
             localUser?.let {
                 val updatedList = it.cardList.toMutableList().apply { remove(cardItem) }
-                userDao.updateCardList(updatedList)
+                val updatedTotalBalance = it.totalBalance - cardBalance
+                
+                userDao.updateUser(
+                    it.copy(
+                        cardList = updatedList,
+                        totalBalance = updatedTotalBalance
+                    )
+                )
             }
         }
     }
@@ -62,103 +75,94 @@ class FirestoreRepo @Inject constructor(
     override suspend fun addSpend(expenseItem: ExpenseItem) {
         val tag = "FirestoreRepo"
         userRef?.let { ref ->
-            try {
-                Log.e(tag, "Transaction başlatılıyor...")
+            Log.e(tag, "Transaction başlatılıyor...")
 
-                val updatedUserData = firestore.runTransaction { transaction ->
-                    val snapshot = transaction.get(ref)
-                    if (!snapshot.exists()) throw Exception("Döküman bulunamadı")
+            val updatedUserData = firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(ref)
+                if (!snapshot.exists()) throw Exception("Döküman bulunamadı")
 
-                    val currentBalance = snapshot.getLong("totalBalance") ?: 0L
-                    val firestoreCardList = snapshot.toObject(User::class.java)?.cardList ?: emptyList()
+                val currentBalance = snapshot.getLong("totalBalance") ?: 0L
+                val firestoreCardList = snapshot.toObject(User::class.java)?.cardList ?: emptyList()
 
-                    val newTotalBalance = currentBalance - expenseItem.price
+                val newTotalBalance = currentBalance - expenseItem.price
 
-                    val updatedCardList = firestoreCardList.map { card ->
-                        if (card.name == expenseItem.spendOrAddCard.name) {
-                            card.copy(balance = card.balance - expenseItem.price)
-                        } else {
-                            card
-                        }
+                val updatedCardList = firestoreCardList.map { card ->
+                    if (card.name == expenseItem.spendOrAddCard.name) {
+                        card.copy(balance = card.balance - expenseItem.price)
+                    } else {
+                        card
                     }
-
-                    transaction.update(ref, "totalBalance", newTotalBalance)
-                    transaction.update(ref, "cardList", updatedCardList)
-                    transaction.update(ref, "expenseList", FieldValue.arrayUnion(expenseItem))
-
-                    Pair(newTotalBalance, updatedCardList)
-                }.await()
-
-                Log.e(tag, "Firestore başarılı. Room güncelleniyor...")
-
-                val localUser = userDao.getUser()
-                localUser?.let { user ->
-                    val updatedExpenseList = user.expenseList.toMutableList().apply {
-                        add(expenseItem)
-                    }
-
-                    userDao.updateUser(
-                        user.copy(
-                            expenseList = updatedExpenseList,
-                            totalBalance = updatedUserData.first.toInt(),
-                            cardList = updatedUserData.second
-                        )
-                    )
-                    Log.e(tag, "Room ve Kart bakiyesi başarıyla güncellendi.")
                 }
 
-            } catch (e: Exception) {
-                Log.e(tag, "Hata: ${e.message}")
-                e.printStackTrace()
-            }
-        }
+                transaction.update(ref, "totalBalance", newTotalBalance)
+                transaction.update(ref, "cardList", updatedCardList)
+                transaction.update(ref, "expenseList", FieldValue.arrayUnion(expenseItem))
+
+                Pair(newTotalBalance, updatedCardList)
+            }.await()
+
+            Log.e(tag, "Firestore başarılı. Room güncelleniyor...")
+
+            val localUser = userDao.getUser()
+            localUser?.let { user ->
+                val updatedExpenseList = user.expenseList.toMutableList().apply {
+                    add(expenseItem)
+                }
+
+                userDao.updateUser(
+                    user.copy(
+                        expenseList = updatedExpenseList,
+                        totalBalance = updatedUserData.first.toInt(),
+                        cardList = updatedUserData.second
+                    )
+                )
+                Log.e(tag, "Room ve Kart bakiyesi başarıyla güncellendi.")
+            } ?: throw Exception("Local user bulunamadı")
+        } ?: throw Exception("User reference bulunamadı")
     }
 
     override suspend fun addBalance(expenseItem: ExpenseItem) {
         val tag = "FirestoreRepo"
         userRef?.let { ref ->
-            try {
-                val updatedData = firestore.runTransaction { transaction ->
-                    val snapshot = transaction.get(ref)
-                    if (!snapshot.exists()) throw Exception("Döküman bulunamadı")
+            val updatedData = firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(ref)
+                if (!snapshot.exists()) throw Exception("Döküman bulunamadı")
 
-                    val currentTotalBalance = snapshot.getLong("totalBalance") ?: 0L
-                    val firestoreCardList = snapshot.toObject(User::class.java)?.cardList ?: emptyList()
+                val currentTotalBalance = snapshot.getLong("totalBalance") ?: 0L
+                val firestoreCardList = snapshot.toObject(User::class.java)?.cardList ?: emptyList()
 
-                    val newTotalBalance = currentTotalBalance + expenseItem.price
+                val newTotalBalance = currentTotalBalance + expenseItem.price
 
-                    val updatedCardList = firestoreCardList.map { card ->
-                        if (card.name == expenseItem.spendOrAddCard.name) {
-                            card.copy(balance = card.balance + expenseItem.price)
-                        } else {
-                            card
-                        }
+                val updatedCardList = firestoreCardList.map { card ->
+                    if (card.name == expenseItem.spendOrAddCard.name) {
+                        card.copy(balance = card.balance + expenseItem.price)
+                    } else {
+                        card
                     }
-
-                    transaction.update(ref, "totalBalance", newTotalBalance)
-                    transaction.update(ref, "cardList", updatedCardList)
-                    transaction.update(ref, "expenseList", FieldValue.arrayUnion(expenseItem))
-
-                    Pair(newTotalBalance, updatedCardList)
-                }.await()
-
-                val localUser = userDao.getUser()
-                localUser?.let { user ->
-                    val updatedExpenseList = user.expenseList.toMutableList().apply {
-                        add(expenseItem)
-                    }
-
-                    userDao.updateUser(
-                        user.copy(
-                            expenseList = updatedExpenseList,
-                            totalBalance = updatedData.first.toInt(),
-                            cardList = updatedData.second,
-                        )
-                    )
                 }
-            } catch (e: Exception) {
-                Log.e(tag, "Bakiye ekleme hatası: ${e.message}")
-            }
-        }
+
+                transaction.update(ref, "totalBalance", newTotalBalance)
+                transaction.update(ref, "cardList", updatedCardList)
+                transaction.update(ref, "expenseList", FieldValue.arrayUnion(expenseItem))
+
+                Pair(newTotalBalance, updatedCardList)
+            }.await()
+
+            val localUser = userDao.getUser()
+            localUser?.let { user ->
+                val updatedExpenseList = user.expenseList.toMutableList().apply {
+                    add(expenseItem)
+                }
+
+                userDao.updateUser(
+                    user.copy(
+                        expenseList = updatedExpenseList,
+                        totalBalance = updatedData.first.toInt(),
+                        cardList = updatedData.second,
+                    )
+                )
+                Log.e(tag, "Gelir başarıyla eklendi.")
+            } ?: throw Exception("Local user bulunamadı")
+        } ?: throw Exception("User reference bulunamadı")
     }
 }

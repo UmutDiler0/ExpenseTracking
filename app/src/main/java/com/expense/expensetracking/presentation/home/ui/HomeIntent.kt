@@ -15,4 +15,6 @@ sealed class HomeIntent {
     data class SelectCard(val card: CardItem): HomeIntent()
 
     data class SetMenu(val menu: Menu): HomeIntent()
+    
+    data class FilterByCard(val cardName: String?): HomeIntent() // null = Tümü
 }

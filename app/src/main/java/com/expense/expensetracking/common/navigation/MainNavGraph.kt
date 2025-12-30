@@ -1,5 +1,6 @@
 package com.expense.expensetracking.common.navigation
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,12 +12,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -44,11 +47,29 @@ import com.expense.expensetracking.ui.theme.SurfaceDark
 
 @Composable
 fun MainNavGraph(
-    rootNavController: NavHostController
+    rootNavController: NavHostController,
+    deepLinkUri: Uri? = null
 ){
     val bottomNavController = rememberNavController()
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+
+    // Deeplink kontrolü
+    LaunchedEffect(deepLinkUri) {
+        deepLinkUri?.let { uri ->
+            if (uri.scheme == "expensetracking" && uri.host == "profile") {
+                when (uri.path) {
+                    "/limit" -> {
+                        // Profil ekranına yönlendir
+                        bottomNavController.navigate(Profile) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     val isBottomBarVisible = remember(currentDestination) {
         currentDestination?.hasRoute<Home>() == true ||
@@ -61,7 +82,7 @@ fun MainNavGraph(
         bottomBar = {
             if(isBottomBarVisible){
                 NavigationBar(
-                    containerColor = SurfaceDark
+                    containerColor = MaterialTheme.colorScheme.surface
                 ) {
                     bottomNavItems.forEach { item ->
 

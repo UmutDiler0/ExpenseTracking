@@ -28,7 +28,11 @@ class ReportsViewModel @Inject constructor(
     public override fun handleIntent(intent: ReportsIntent) {
         when (intent) {
             is ReportsIntent.ChangePeriod -> {
-                calculateStats(allExpenses, intent.period)
+                calculateStats(allExpenses, intent.period, uiDataState.value.selectedTab)
+            }
+            is ReportsIntent.ChangeTab -> {
+                handleDataState { copy(selectedTab = intent.tab) }
+                calculateStats(allExpenses, uiDataState.value.selectedPeriod, intent.tab)
             }
         }
     }
@@ -38,12 +42,12 @@ class ReportsViewModel @Inject constructor(
             .onEach { user ->
                 user?.let {
                     allExpenses = it.expenseList
-                    calculateStats(allExpenses, uiDataState.value.selectedPeriod)
+                    calculateStats(allExpenses, uiDataState.value.selectedPeriod, uiDataState.value.selectedTab)
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun calculateStats(list: List<ExpenseItem>, period: String) {
+    private fun calculateStats(list: List<ExpenseItem>, period: String, tab: ReportTab) {
         val calendar = Calendar.getInstance()
         val today = calendar.get(Calendar.DAY_OF_YEAR)
         val currentYear = calendar.get(Calendar.YEAR)
@@ -69,15 +73,21 @@ class ReportsViewModel @Inject constructor(
         }
 
         val expensesOnly = filteredList.filter { !it.priceUp }
+        val incomesOnly = filteredList.filter { it.priceUp }
 
         handleDataState {
             copy(
-                uiState = UiState.Success,
+                uiState = UiState.Idle,
                 selectedPeriod = period,
+                selectedTab = tab,
                 totalExpense = expensesOnly.sumOf { it.price },
                 averageExpense = if (expensesOnly.isNotEmpty()) expensesOnly.sumOf { it.price } / expensesOnly.size else 0,
+                totalIncome = incomesOnly.sumOf { it.price },
+                averageIncome = if (incomesOnly.isNotEmpty()) incomesOnly.sumOf { it.price } / incomesOnly.size else 0,
                 categoryDistribution = expensesOnly.groupBy { it.title }.mapValues { it.value.sumOf { e -> e.price } },
-                weeklyBarData = getWeeklyBarData(expensesOnly)
+                incomeDistribution = incomesOnly.groupBy { it.title }.mapValues { it.value.sumOf { e -> e.price } },
+                weeklyBarData = getWeeklyBarData(expensesOnly),
+                weeklyIncomeData = getWeeklyBarData(incomesOnly)
             )
         }
     }

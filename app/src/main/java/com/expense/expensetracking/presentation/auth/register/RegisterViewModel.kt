@@ -9,6 +9,10 @@ import com.expense.expensetracking.common.util.UiState
 import com.expense.expensetracking.data.repo.AuthRepository
 import com.expense.expensetracking.domain.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,13 +22,88 @@ class RegisterViewModel @Inject constructor(
 ): BaseViewModel<RegisterState, RegisterIntent>(
     initialState = RegisterState(),
 ) {
+
+    init {
+        observeEmailValidation()
+        observePasswordValidation()
+        observeNameValidation()
+        observeSurnameValidation()
+    }
+
+    private fun observeEmailValidation() {
+        viewModelScope.launch {
+            uiDataState.map { it.email }
+                .distinctUntilChanged()
+                .drop(1)
+                .debounce(1200)
+                .collect { email ->
+                    val error = when {
+                        email.isEmpty() -> "E-posta alanı boş bırakılamaz"
+                        !email.contains("@gmail.com") -> "Sadece @gmail.com uzantılı adresler kabul edilir"
+                        !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> "geçersiz e posta formatı"
+                        else -> null
+                    }
+                    handleDataState { copy(emailError = error) }
+                }
+        }
+    }
+
+    private fun observePasswordValidation() {
+        viewModelScope.launch {
+            uiDataState.map { it.password }
+                .distinctUntilChanged()
+                .drop(1)
+                .debounce(1200)
+                .collect { password ->
+                    val hasUpperCase = password.any { it.isUpperCase() }
+                    val hasDigit = password.any { it.isDigit() }
+                    val isLongEnough = password.length >= 6
+
+                    val error = when {
+                        password.isEmpty() -> "Şifre alanı boş bırakılamaz"
+                        !isLongEnough -> "Şifre en az 6 karakter olmalıdır"
+                        !hasUpperCase -> "En az bir büyük harf içermelidir"
+                        !hasDigit -> "En az bir rakam içermelidir"
+                        else -> null
+                    }
+                    handleDataState { copy(passwordError = error) }
+                }
+        }
+    }
+
+    private fun observeNameValidation() {
+        viewModelScope.launch {
+            uiDataState.map { it.name }
+                .distinctUntilChanged()
+                .drop(1)
+                .debounce(1200)
+                .collect { name ->
+                    val error = if (name.isBlank()) "Ad alanı boş bırakılamaz" else null
+                    handleDataState { copy(nameError = error) }
+                }
+        }
+    }
+
+    private fun observeSurnameValidation() {
+        viewModelScope.launch {
+            uiDataState.map { it.surname }
+                .distinctUntilChanged()
+                .drop(1)
+                .debounce(600)
+                .collect { surname ->
+                    val error = if (surname.isBlank()) "Soyad alanı boş bırakılamaz" else null
+                    handleDataState { copy(surnameError = error) }
+                }
+        }
+    }
+
     public override fun handleIntent(intent: RegisterIntent) {
         when(intent) {
             is RegisterIntent.SetEmail -> {
-                handleDataState { copy(email = intent.email) }
+                handleDataState { copy(email = intent.email, emailError = null) }
             }
             is RegisterIntent.SetPassword -> {
-                handleDataState { copy(password = intent.password) }
+                handleDataState { copy(password = intent.password, passwordError = null) }
             }
             RegisterIntent.SetPasswordVisiblity -> {
                 handleDataState { copy(isPasswordVisible = !isPasswordVisible) }
@@ -62,6 +141,34 @@ class RegisterViewModel @Inject constructor(
                         }
                         return@handleIntent
                     }
+
+                    // Email kontrolü
+                    viewModelScope.launch {
+                        handleDataState { copy(uiState = UiState.Loading) }
+                        
+                        val emailExists = authRepository.checkEmailExists(email)
+                        
+                        if (emailExists) {
+                            handleDataState {
+                                copy(
+                                    uiState = UiState.Idle,
+                                    isError = true,
+                                    errorMessage = "Bu e-posta adresi zaten kayıtlı"
+                                )
+                            }
+                            return@launch
+                        }
+                        
+                        handleDataState {
+                            copy(
+                                uiState = UiState.Idle,
+                                registerStep = intent.registerStep,
+                                isError = false,
+                                errorMessage = ""
+                            )
+                        }
+                    }
+                    return@handleIntent
                 }
 
                 handleDataState {
@@ -73,17 +180,13 @@ class RegisterViewModel @Inject constructor(
                 }
             }
             is RegisterIntent.SetName -> {
-                handleDataState {
-                    copy(
-                        name = intent.name
-                    )
+                if (intent.name.length <= 16) {
+                    handleDataState { copy(name = intent.name, nameError = null) }
                 }
             }
             is RegisterIntent.SetSurname -> {
-                handleDataState {
-                    copy(
-                        surname = intent.surname
-                    )
+                if (intent.surname.length <= 16) {
+                    handleDataState { copy(surname = intent.surname, surnameError = null) }
                 }
             }
             is RegisterIntent.OnClickRegisterBtn -> {

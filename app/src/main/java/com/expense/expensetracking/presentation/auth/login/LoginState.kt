@@ -9,6 +9,8 @@ data class LoginState(
     val isChecked: Boolean = false,
     val isError: Boolean = false,
     val errorMessage: String = "",
+    val emailError: String? = null,
+    val passwordError: String? = null,
     val isPasswordVisible: Boolean = false,
     val isRememberMe: Boolean = false,
 )

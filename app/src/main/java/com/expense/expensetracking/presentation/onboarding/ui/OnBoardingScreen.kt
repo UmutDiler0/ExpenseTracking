@@ -31,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,18 +51,18 @@ fun OnBoardingScreen(
     val pages = listOf(
         OnboardingPageData(
             imageSource = R.drawable.credit_cards,
-            title = "Harcamalarını Takip Et",
-            description = "Nereye ne kadar harcadığını kolayca gör."
+            titleRes = R.string.onboarding_title_1,
+            descriptionRes = R.string.onboarding_desc_1
         ),
         OnboardingPageData(
             imageSource = R.drawable.financial_protection,
-            title = "Tasarruf Et",
-            description = "Ne kadar harcadığını gör ve tasarruf et."
+            titleRes = R.string.onboarding_title_2,
+            descriptionRes = R.string.onboarding_desc_2
         ),
         OnboardingPageData(
             imageSource = R.drawable.finance_management,
-            title = "Harcamalarını Takip Et",
-            description = "Nereye ne kadar harcadığını kolayca gör."
+            titleRes = R.string.onboarding_title_3,
+            descriptionRes = R.string.onboarding_desc_3
         ),
 
     )
@@ -111,8 +112,8 @@ fun OnBoardingScreen(
             ) { pageIndex ->
                 PagerItem(
                     image = pages[pageIndex].imageSource,
-                    label = pages[pageIndex].title,
-                    desc = pages[pageIndex].description
+                    label = stringResource(pages[pageIndex].titleRes),
+                    desc = stringResource(pages[pageIndex].descriptionRes)
                 )
             }
 
@@ -129,7 +130,7 @@ fun OnBoardingScreen(
                         onNavigateHomeScreen()
                     } ) {
                         Text(
-                            "Atla",
+                            stringResource(R.string.onboarding_skip),
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                         )
                     }
@@ -142,7 +143,7 @@ fun OnBoardingScreen(
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
                     ) {
-                        Text("İleri", color = MaterialTheme.colorScheme.onPrimary)
+                        Text(stringResource(R.string.onboarding_next), color = MaterialTheme.colorScheme.onPrimary)
                     }
                 } else {
                     Button(
@@ -153,7 +154,7 @@ fun OnBoardingScreen(
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
                     ) {
-                        Text("Hemen Başla", color = MaterialTheme.colorScheme.onPrimary)
+                        Text(stringResource(R.string.onboarding_start), color = MaterialTheme.colorScheme.onPrimary)
                     }
                 }
             }
@@ -163,6 +164,6 @@ fun OnBoardingScreen(
 
 data class OnboardingPageData(
     val imageSource: Int,
-    val title: String,
-    val description: String // İstersen açıklama da ekleyebilirsin
+    val titleRes: Int,
+    val descriptionRes: Int
 )

@@ -22,6 +22,11 @@ class DataStoreManager @Inject constructor(
         val USER_EMAIL = stringPreferencesKey("user_email")
         val USER_PASSWORD = stringPreferencesKey("user_password")
         val IS_REMEMBER_ME = booleanPreferencesKey("is_remember_me")
+        val IS_DARK_MODE = booleanPreferencesKey("is_dark_mode")
+        val BALANCE_LIMIT = doublePreferencesKey("balance_limit")
+        val NOTIFICATION_ENABLED = booleanPreferencesKey("notification_enabled")
+        val NOTIFICATION_SENT = booleanPreferencesKey("notification_sent")
+        val LAST_NOTIFIED_BALANCE = doublePreferencesKey("last_notified_balance")
     }
 
     val onBoardingCompleted: Flow<Boolean> = context.dataStore.data.map {
@@ -40,6 +45,26 @@ class DataStoreManager @Inject constructor(
         it[PreferencesKeys.IS_REMEMBER_ME] ?: false
     }
 
+    val isDarkMode: Flow<Boolean> = context.dataStore.data.map {
+        it[PreferencesKeys.IS_DARK_MODE] ?: false
+    }
+
+    val balanceLimit: Flow<Double> = context.dataStore.data.map {
+        it[PreferencesKeys.BALANCE_LIMIT] ?: 0.0
+    }
+
+    val notificationEnabled: Flow<Boolean> = context.dataStore.data.map {
+        it[PreferencesKeys.NOTIFICATION_ENABLED] ?: false
+    }
+
+    val notificationSent: Flow<Boolean> = context.dataStore.data.map {
+        it[PreferencesKeys.NOTIFICATION_SENT] ?: false
+    }
+
+    val lastNotifiedBalance: Flow<Double> = context.dataStore.data.map {
+        it[PreferencesKeys.LAST_NOTIFIED_BALANCE] ?: 0.0
+    }
+
     suspend fun saveOnBoardingStatus(completed: Boolean) {
         context.dataStore.edit { it[PreferencesKeys.ONBOARDING_COMPLETED] = completed }
     }
@@ -54,6 +79,33 @@ class DataStoreManager @Inject constructor(
 
     suspend fun saveRememberMe(isRemember: Boolean) {
         context.dataStore.edit { it[PreferencesKeys.IS_REMEMBER_ME] = isRemember }
+    }
+
+    suspend fun saveDarkMode(isDark: Boolean) {
+        context.dataStore.edit { it[PreferencesKeys.IS_DARK_MODE] = isDark }
+    }
+
+    suspend fun saveBalanceLimit(limit: Double) {
+        context.dataStore.edit { it[PreferencesKeys.BALANCE_LIMIT] = limit }
+    }
+
+    suspend fun saveNotificationEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[PreferencesKeys.NOTIFICATION_ENABLED] = enabled }
+    }
+
+    suspend fun saveNotificationSent(sent: Boolean) {
+        context.dataStore.edit { it[PreferencesKeys.NOTIFICATION_SENT] = sent }
+    }
+
+    suspend fun saveLastNotifiedBalance(balance: Double) {
+        context.dataStore.edit { it[PreferencesKeys.LAST_NOTIFIED_BALANCE] = balance }
+    }
+
+    suspend fun resetNotificationState() {
+        context.dataStore.edit {
+            it[PreferencesKeys.NOTIFICATION_SENT] = false
+            it[PreferencesKeys.LAST_NOTIFIED_BALANCE] = 0.0
+        }
     }
 
     suspend fun clearAuthData() {

@@ -2,7 +2,9 @@ package com.expense.expensetracking.presentation.auth.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.keyframes
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +20,9 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -35,6 +39,9 @@ import androidx.compose.ui.unit.dp
 import com.expense.expensetracking.ui.theme.InputBg
 import com.expense.expensetracking.ui.theme.InputText
 import com.expense.expensetracking.ui.theme.Manrope
+import com.expense.expensetracking.ui.theme.PrimaryGreen
+import com.expense.expensetracking.ui.theme.TextBlack
+import com.expense.expensetracking.ui.theme.TextGray
 import com.expense.expensetracking.ui.theme.TextWhite
 
 @Composable
@@ -52,6 +59,12 @@ fun AuthEditText(
     onValueChange: (String) -> Unit
 ) {
     val shakeOffset = remember { Animatable(0f) }
+
+    // Temaya göre renkleri dinamik seçiyoruz
+    val errorColor = MaterialTheme.colorScheme.error
+    val containerColor = MaterialTheme.colorScheme.surface
+    val contentColor = MaterialTheme.colorScheme.onSurface
+    val iconTint = if (isError) errorColor else MaterialTheme.colorScheme.primary
 
     LaunchedEffect(isError) {
         if (isError) {
@@ -79,59 +92,65 @@ fun AuthEditText(
             .offset(x = shakeOffset.value.dp)
     ) {
         Text(
-            label,
-            color = if (isError) Color.Red else Color.Unspecified
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = if (isError) errorColor else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         TextField(
             value = value,
-            onValueChange = {
-                onValueChange(it)
-            },
-            isError = isError, // TextField'ın kendi hata durumunu da aktif eder
+            onValueChange = onValueChange,
+            isError = isError,
             leadingIcon = {
-                if (isPassword) {
-                    Icon(
-                        imageVector = Icons.Filled.Lock,
-                        contentDescription = "",
-                        tint = if (isError) Color.Red else InputText // Hata varsa ikon kırmızı
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Filled.Person,
-                        contentDescription = null,
-                        tint = if (isError) Color.Red else InputText
-                    )
-                }
+                Icon(
+                    imageVector = if (isPassword) Icons.Filled.Lock else Icons.Filled.Person,
+                    contentDescription = null,
+                    tint = iconTint
+                )
             },
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = InputBg,
-                unfocusedContainerColor = InputBg,
-                disabledContainerColor = InputBg,
-                focusedTextColor = TextWhite,
-                unfocusedTextColor = TextWhite,
+                // Arka plan renkleri
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor,
+                errorContainerColor = containerColor,
+
+                // Yazı renkleri
+                focusedTextColor = contentColor,
+                unfocusedTextColor = contentColor,
+                errorTextColor = contentColor,
+
+                // Çizgileri tamamen gizliyoruz (Modern görünüm için)
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
-
-                errorContainerColor = InputBg,
                 errorIndicatorColor = Color.Transparent,
 
-                cursorColor = TextWhite,
-                errorCursorColor = TextWhite,
-                errorLabelColor = Color.Red,
-                errorLeadingIconColor = Color.Red,
-                errorTrailingIconColor = Color.Red
+                // İmleç ve ikon renkleri
+                cursorColor = MaterialTheme.colorScheme.primary,
+                errorCursorColor = errorColor,
+                errorLeadingIconColor = errorColor,
+                errorTrailingIconColor = errorColor
             ),
             shape = RoundedCornerShape(12.dp),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = when {
+                        isError -> errorColor
+                        else -> Color.Transparent
+                    },
+                    shape = RoundedCornerShape(12.dp)
+                ),
             placeholder = {
                 Text(
-                    hint,
+                    text = hint,
                     maxLines = 1,
-                    color = if (isError) Color.Red.copy(alpha = 0.5f) else Color.Gray
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (isError) errorColor.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                 )
             },
             keyboardOptions = KeyboardOptions(
@@ -145,14 +164,13 @@ fun AuthEditText(
             singleLine = true,
             trailingIcon = {
                 if (isPassword) {
-                    Icon(
-                        imageVector = if (visible) Icons.Rounded.Visibility else Icons.Rounded.VisibilityOff,
-                        contentDescription = "",
-                        tint = if (isError) Color.Red else LocalContentColor.current,
-                        modifier = Modifier.clickable {
-                            onClick()
-                        }
-                    )
+                    IconButton(onClick = onClick) {
+                        Icon(
+                            imageVector = if (visible) Icons.Rounded.Visibility else Icons.Rounded.VisibilityOff,
+                            contentDescription = null,
+                            tint = if (isError) errorColor else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             },
             visualTransformation = if (isPassword && !visible) {
