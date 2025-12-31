@@ -82,6 +82,18 @@ fun SettingsScreen(
                         viewModel.handleIntent(SettingsIntent.ChangeLanguage(language))
                     }
                 )
+                Spacer(modifier = Modifier.height(Dimens.spacingSmall))
+                CurrencySettingItem(
+                    selectedCurrency = state.selectedCurrency,
+                    currencyList = state.currencyList,
+                    loadState = state.currencyLoadState,
+                    onCurrencySelect = { currency ->
+                        viewModel.handleIntent(SettingsIntent.ChangeCurrency(currency))
+                    },
+                    onLoadCurrencies = {
+                        viewModel.handleIntent(SettingsIntent.LoadCurrencies)
+                    }
+                )
             }
 
             // Hesap Ayarları
@@ -245,6 +257,135 @@ fun LanguageSettingItem(
                         expanded = false
                     }
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun CurrencySettingItem(
+    selectedCurrency: String,
+    currencyList: List<String>,
+    loadState: CurrencyLoadState,
+    onCurrencySelect: (String) -> Unit,
+    onLoadCurrencies: () -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    // Liste açıldığında ve loading state'deyse, veri yüklemeyi tetikle
+    LaunchedEffect(expanded) {
+        if (expanded && loadState is CurrencyLoadState.Loading) {
+            onLoadCurrencies()
+        }
+    }
+
+    Box {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(Dimens.cornerRadiusMedium))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(
+                    width = Dimens.strokeThin,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(Dimens.cornerRadiusMedium)
+                )
+                .clickable { expanded = true }
+                .padding(Dimens.paddingNormal),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.AttachMoney,
+                contentDescription = "Currency",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(Dimens.iconNormal)
+            )
+            Spacer(modifier = Modifier.width(Dimens.spacingNormal))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Para Birimi",
+                    fontSize = Dimens.textMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = selectedCurrency,
+                    fontSize = Dimens.textTiny,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+            }
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = "Dropdown",
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surface)
+        ) {
+            when (loadState) {
+                is CurrencyLoadState.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(Dimens.paddingNormal),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+                is CurrencyLoadState.Error -> {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "Liste yüklenemedi",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        },
+                        onClick = { }
+                    )
+                }
+                is CurrencyLoadState.Idle, is CurrencyLoadState.Success -> {
+                    if (currencyList.isEmpty()) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = selectedCurrency,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            },
+                            onClick = {
+                                onCurrencySelect(selectedCurrency)
+                                expanded = false
+                            }
+                        )
+                    } else {
+                        currencyList.forEach { currency ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = currency,
+                                        color = if (currency == selectedCurrency)
+                                            MaterialTheme.colorScheme.primary
+                                        else
+                                            MaterialTheme.colorScheme.onSurface
+                                    )
+                                },
+                                onClick = {
+                                    onCurrencySelect(currency)
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
             }
         }
     }

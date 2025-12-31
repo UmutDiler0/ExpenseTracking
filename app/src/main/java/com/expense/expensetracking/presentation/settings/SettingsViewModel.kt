@@ -38,11 +38,43 @@ class SettingsViewModel @Inject constructor(
                     copy(selectedLanguage = intent.language)
                 }
             }
+            is SettingsIntent.ChangeCurrency -> {
+                handleDataState {
+                    copy(selectedCurrency = intent.currency)
+                }
+            }
+            is SettingsIntent.LoadCurrencies -> {
+                loadCurrencies()
+            }
             is SettingsIntent.ChangePassword -> {
                 // UI only - navigation will be handled in the screen
             }
             is SettingsIntent.DeleteAccount -> {
                 // UI only - navigation will be handled in the screen
+            }
+        }
+    }
+
+    private fun loadCurrencies() {
+        viewModelScope.launch {
+            handleDataState {
+                copy(currencyLoadState = CurrencyLoadState.Loading)
+            }
+            
+            // Simulate loading - şimdilik boş liste
+            kotlinx.coroutines.delay(1000)
+            
+            handleDataState {
+                copy(
+                    currencyList = emptyList(),
+                    currencyLoadState = CurrencyLoadState.Success
+                )
+            }
+            
+            // Success'ten sonra Idle'a geç
+            kotlinx.coroutines.delay(100)
+            handleDataState {
+                copy(currencyLoadState = CurrencyLoadState.Idle)
             }
         }
     }
